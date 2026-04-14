@@ -1,4 +1,4 @@
-"""Main Nexus Dashboard MCP Server implementation."""
+"""Main Catalyst Center MCP Server implementation."""
 
 import json
 import logging
@@ -20,14 +20,14 @@ from src.middleware.security import SecurityMiddleware
 logger = logging.getLogger(__name__)
 
 
-class NexusDashboardMCP:
-    """Nexus Dashboard MCP Server."""
+class CatalystCenterMCP:
+    """Catalyst Center MCP Server."""
 
     def __init__(self, cluster_name: Optional[str] = None):
-        """Initialize Nexus Dashboard MCP Server.
+        """Initialize Catalyst Center MCP Server.
 
         Args:
-            cluster_name: Optional name of the Nexus Dashboard cluster to bind to.
+            cluster_name: Optional name of the Catalyst Center cluster to bind to.
                           When None, the cluster is resolved per-request from the
                           authenticated user's cluster assignment.
         """
@@ -43,7 +43,7 @@ class NexusDashboardMCP:
         self.audit_logger = AuditLogger(cluster_name or "default")
 
         # MCP server
-        self.server = Server("nexus-dashboard-mcp")
+        self.server = Server("catalyst-center-mcp")
 
         # Loaded specs and tools
         self.loaded_apis: Dict[str, Dict[str, Any]] = {}
@@ -67,7 +67,7 @@ class NexusDashboardMCP:
         return self._auth_middleware_cache[cluster_name]
 
     async def load_api(self, api_name: str) -> bool:
-        """Load a specific Nexus Dashboard API.
+        """Load a specific Catalyst Center API.
 
         Args:
             api_name: Name of the API to load
@@ -146,7 +146,7 @@ class NexusDashboardMCP:
             return await guidance_service.generate_system_prompt()
         except Exception as e:
             logger.warning(f"Failed to generate system prompt: {e}")
-            return "Nexus Dashboard MCP Server - Network automation APIs"
+            return "Catalyst Center MCP Server - Network automation APIs"
 
     async def get_workflows_json(self) -> str:
         """Get workflows as JSON for MCP resource."""
@@ -187,7 +187,7 @@ class NexusDashboardMCP:
         method = operation["method"]
         path = operation["path"]
         operation_id = operation["operation_id"]
-        api_name = operation.get("api_name", "manage")  # Get API name from operation
+        api_name = operation.get("api_name", "intent")  # Get API name from operation
         summary = operation.get("summary", "")
         description = operation.get("description", summary)
 
@@ -289,11 +289,11 @@ class NexusDashboardMCP:
         """
         try:
             # Find operation from tool name
-            # Handle both "manage_operationId" and just "operationId" formats
+            # Handle both "intent_operationId" and just "operationId" formats
             if "_" in name:
                 api_name, operation_id = name.split("_", 1)
             else:
-                api_name = "manage"  # Default to manage API
+                api_name = "intent"  # Default to intent API
                 operation_id = name
 
             operation = next(
@@ -353,7 +353,7 @@ class NexusDashboardMCP:
                 )]
 
             # Get API name from operation
-            api_name = operation.get("api_name", "manage")
+            api_name = operation.get("api_name", "intent")
 
             # Resolve target cluster: caller arg > instance binding > "default"
             target_cluster = cluster_name or self.cluster_name or "default"
@@ -449,13 +449,13 @@ class NexusDashboardMCP:
             async def list_resources() -> List[Resource]:
                 return [
                     Resource(
-                        uri="nexus://guidance/system-prompt",
+                        uri="catalyst://guidance/system-prompt",
                         name="API Guidance System Prompt",
-                        description="Complete guidance for using Nexus Dashboard APIs including API selection, workflows, and best practices",
+                        description="Complete guidance for using Catalyst Center APIs including API selection, workflows, and best practices",
                         mimeType="text/plain"
                     ),
                     Resource(
-                        uri="nexus://guidance/workflows",
+                        uri="catalyst://guidance/workflows",
                         name="Common Workflows",
                         description="Pre-defined workflows for common network automation tasks",
                         mimeType="application/json"
@@ -464,9 +464,9 @@ class NexusDashboardMCP:
 
             @self.server.read_resource()
             async def read_resource(uri: str) -> str:
-                if uri == "nexus://guidance/system-prompt":
+                if uri == "catalyst://guidance/system-prompt":
                     return await self.get_system_prompt()
-                elif uri == "nexus://guidance/workflows":
+                elif uri == "catalyst://guidance/workflows":
                     return await self.get_workflows_json()
                 else:
                     raise ValueError(f"Unknown resource URI: {uri}")
@@ -479,7 +479,7 @@ class NexusDashboardMCP:
 
             # Start stdio server
             async with stdio_server() as (read_stream, write_stream):
-                logger.info("Nexus Dashboard MCP Server started via stdio")
+                logger.info("Catalyst Center MCP Server started via stdio")
                 await self.server.run(
                     read_stream,
                     write_stream,

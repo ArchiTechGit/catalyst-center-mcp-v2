@@ -1,4 +1,4 @@
-"""API Registry for managing multiple Nexus Dashboard APIs."""
+"""API Registry for managing multiple Catalyst Center APIs."""
 
 from typing import Dict, List, Optional
 from dataclasses import dataclass
@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 @dataclass
 class APIDefinition:
-    """Definition of a Nexus Dashboard API."""
+    """Definition of a Catalyst Center API."""
 
     name: str
     display_name: str
@@ -17,51 +17,18 @@ class APIDefinition:
 
 
 class APIRegistry:
-    """Registry for managing multiple Nexus Dashboard APIs."""
+    """Registry for managing multiple Catalyst Center APIs."""
 
     # Define all available APIs
     APIS: Dict[str, APIDefinition] = {
-        "manage": APIDefinition(
-            name="manage",
-            display_name="Nexus Dashboard Manage (Fabric Controller)",
-            spec_file="nexus_dashboard_manage.json",
-            base_path="/api/v1/manage",
-            description="Fabric management, switches, networks, VRFs, policies, templates",
+        "intent": APIDefinition(
+            name="intent",
+            display_name="Catalyst Center Intent API",
+            spec_file="intent_api_3_1_3.json",
+            base_path="",
+            description="Catalyst Center Intent API operations for cluster automation and management",
             enabled=True
         ),
-        "analyze": APIDefinition(
-            name="analyze",
-            display_name="Nexus Dashboard Insights (Network Analysis)",
-            spec_file="analyze.json",
-            base_path="/api/v1/analyze",
-            description="Network insights, flow analytics, anomalies, compliance, advisories",
-            enabled=True
-        ),
-        "infra": APIDefinition(
-            name="infra",
-            display_name="Nexus Dashboard Infrastructure",
-            spec_file="infra.json",
-            base_path="/api/v1/infra",
-            description="Cluster management, nodes, services, system health, backups",
-            enabled=True
-        ),
-        "onemanage": APIDefinition(
-            name="onemanage",
-            display_name="Nexus Dashboard OneManage (Multi-Site)",
-            spec_file="one_mange.json",
-            base_path="/api/v1/oneManage",
-            description="Multi-site orchestration and management",
-            enabled=True
-        ),
-        # Note: orchestrator.json currently has parsing issues
-        # "orchestrator": APIDefinition(
-        #     name="orchestrator",
-        #     display_name="Nexus Dashboard Orchestrator",
-        #     spec_file="orchestrator.json",
-        #     base_path="/api/v1/orchestrator",
-        #     description="Multi-cloud orchestration and automation",
-        #     enabled=False
-        # ),
     }
 
     @classmethod

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Nexus Dashboard MCP Server is built with a modular, layered architecture designed for security, maintainability, and extensibility.
+The Catalyst Center MCP Server is built with a modular, layered architecture designed for security, maintainability, and extensibility.
 
 ## Core Components
 
@@ -25,7 +25,7 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
 **Purpose**: Cross-cutting concerns for all API operations
 
 #### Authentication Middleware (`auth.py`)
-- Manages Nexus Dashboard authentication
+- Manages Catalyst Center authentication
 - Handles session/cookie management
 - Executes authenticated API requests
 - Automatic token refresh on expiration
@@ -51,8 +51,8 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
 - CRUD operations for cluster credentials
 - Credential retrieval and decryption
 
-#### Nexus API Client (`nexus_api.py`)
-- HTTP client for Nexus Dashboard
+#### Catalyst Center API Client (`catalyst_api.py`)
+- HTTP client for Catalyst Center
 - Authentication handling
 - Retry logic and error handling
 - Connection pooling
@@ -62,7 +62,7 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
 **Purpose**: Database models using SQLAlchemy ORM
 
 **Models**:
-- `Cluster`: Nexus Dashboard cluster credentials
+- `Cluster`: Catalyst Center cluster credentials
 - `SecurityConfig`: Global security settings
 - `APIEndpoint`: Registry of available API operations
 - `AuditLog`: Audit trail of all operations
@@ -85,8 +85,8 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
 2. Claude Desktop → MCP Server (tool call)
 3. MCP Server → Security Middleware (check: always allowed)
 4. MCP Server → Auth Middleware (authenticate if needed)
-5. Auth Middleware → Nexus Dashboard API
-6. Nexus Dashboard → Response
+5. Auth Middleware → Catalyst Center API
+6. Catalyst Center → Response
 7. MCP Server → Audit Logger (log success)
 8. MCP Server → Claude Desktop (return data)
 ```
@@ -100,8 +100,8 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
    ├─ If disabled → PermissionError → User
    └─ If enabled → Continue
 4. MCP Server → Auth Middleware
-5. Auth Middleware → Nexus Dashboard API
-6. Nexus Dashboard → Response
+5. Auth Middleware → Catalyst Center API
+6. Catalyst Center → Response
 7. MCP Server → Audit Logger (log with request body)
 8. MCP Server → Claude Desktop (return result)
 ```
@@ -135,14 +135,14 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
        │
        ▼
 ┌──────────────────────┐
-│ Nexus API Client     │
+│ Catalyst Center API Client     │
 │ POST /login          │
 │ (Basic Auth)         │
 └──────┬───────────────┘
        │
        ▼
 ┌──────────────────────┐
-│ Nexus Dashboard      │
+│ Catalyst Center      │
 │ Returns cookies      │
 └──────┬───────────────┘
        │
@@ -161,7 +161,7 @@ The Nexus Dashboard MCP Server is built with a modular, layered architecture des
 - Scope: Passwords in `clusters` table
 
 **In Transit**:
-- HTTPS for Nexus Dashboard communication
+- HTTPS for Catalyst Center communication
 - Option to disable SSL verification for dev/test
 
 ## Database Schema
@@ -338,7 +338,7 @@ Claude Desktop (user-friendly message)
 1. **Authentication Errors**: 401, credential issues
 2. **Permission Errors**: Edit mode required
 3. **Validation Errors**: Invalid parameters
-4. **API Errors**: Nexus Dashboard errors (4xx, 5xx)
+4. **API Errors**: Catalyst Center errors (4xx, 5xx)
 5. **System Errors**: Database, network failures
 
 Each category has specific handling and user messaging.
@@ -371,10 +371,10 @@ Each category has specific handling and user messaging.
 
 - Multi-component workflows
 - Real database (test DB)
-- Mocked Nexus Dashboard API
+- Mocked Catalyst Center API
 
 ### E2E Tests (Future)
 
 - Full stack testing
-- Real Nexus Dashboard (sandbox/dev)
+- Real Catalyst Center (sandbox/dev)
 - User workflow validation

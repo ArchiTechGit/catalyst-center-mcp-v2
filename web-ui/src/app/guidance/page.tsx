@@ -92,7 +92,7 @@ export default function GuidanceDashboard() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">API Guidance System</h2>
           <p className="text-gray-600">
-            Configure how Claude interacts with Nexus Dashboard APIs through contextual guidance,
+            Configure how Claude interacts with Catalyst Center APIs through contextual guidance,
             workflows, and enhanced tool descriptions.
           </p>
         </div>
@@ -128,7 +128,7 @@ export default function GuidanceDashboard() {
               <h3 className="text-sm font-medium text-blue-800">About API Guidance</h3>
               <div className="mt-2 text-sm text-blue-700">
                 <p>
-                  The API Guidance System helps Claude understand which Nexus Dashboard APIs to use and when.
+                  The API Guidance System helps Claude understand which Catalyst Center APIs to use and when.
                   It provides contextual information, multi-step workflows, and enhanced descriptions to
                   improve the quality of API interactions.
                 </p>

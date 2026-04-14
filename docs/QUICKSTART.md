@@ -13,8 +13,8 @@ docker compose version
 ### 2. Clone and Configure
 
 ```bash
-git clone https://github.com/beye91/nexus-dashboard-mcp.git
-cd nexus-dashboard-mcp
+git clone https://github.com/ArchiTechGit/catalyst-center-mcp-v2
+cd catalyst-center-mcp
 
 # Configure your server's IP address (required for SSL certificate)
 echo "CERT_SERVER_IP=YOUR_SERVER_IP" > .env
@@ -74,7 +74,7 @@ curl -k https://localhost:8444/api/health
 2. Click **Add New Cluster**
 3. Fill in details:
    - Name: `my-cluster`
-   - URL: `https://nexus-dashboard.example.com`
+   - URL: `https://catalyst-center.example.com`
    - Username: `admin`
    - Password: Your password
    - SSL Verification: Off (for self-signed certs)
@@ -94,7 +94,7 @@ Add to your Claude Desktop config file:
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "npx",
       "args": [
         "mcp-remote@latest",
@@ -112,15 +112,15 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
 ### Restart and Test
 
 1. Restart Claude Desktop
-2. Look for MCP icon showing "nexus-dashboard" connected
-3. Try: "List all fabrics in my Nexus Dashboard"
+2. Look for MCP icon showing "catalyst-center" connected
+3. Try: "List all fabrics in my Catalyst Center"
 
 ## Example Queries
 
 ### Read-Only Operations (Always Allowed)
 
 ```
-"Show me all fabrics in my Nexus Dashboard"
+"Show me all fabrics in my Catalyst Center"
 
 "List recent anomalies detected in the network"
 
@@ -171,15 +171,15 @@ docker compose down && docker compose up -d
 
 ```bash
 # Regenerate certificates
-docker volume rm nexus-mcp-certs
+docker volume rm catalyst-center-mcp-certs
 docker compose up -d
 ```
 
 ### Authentication Failures
 
 ```bash
-# Test Nexus Dashboard connection manually
-curl -k -X POST https://nexus-dashboard.example.com/login \
+# Test Catalyst Center connection manually
+curl -k -X POST https://catalyst-center.example.com/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"yourpass"}'
 ```
@@ -188,7 +188,7 @@ curl -k -X POST https://nexus-dashboard.example.com/login \
 
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d nexus_mcp
+docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Full reset (WARNING: deletes all data!)
 docker compose down -v
@@ -233,7 +233,7 @@ docker image prune -f
 
 ## Getting Help
 
-- Issues: https://github.com/beye91/nexus-dashboard-mcp/issues
+- Issues: https://github.com/ArchiTechGit/catalyst-center-mcp-v2/issues
 - Documentation: `docs/` directory
 - Troubleshooting: `docs/DEPLOYMENT.md#troubleshooting`
 

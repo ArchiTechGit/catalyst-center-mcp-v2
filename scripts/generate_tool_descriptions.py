@@ -10,10 +10,7 @@ import sys
 from pathlib import Path
 
 SPECS = [
-    ("manage", "nexus_dashboard_manage.json", "Manage API"),
-    ("analyze", "analyze.json", "Analyze API"),
-    ("infra", "infra.json", "Infrastructure API"),
-    ("onemanage", "one_mange.json", "OneManage API"),
+    ("intent", "intent_api_3_1_3.json", "Catalyst Center Intent API"),
 ]
 
 SPECS_DIR = Path(__file__).parent.parent / "openapi_specs"

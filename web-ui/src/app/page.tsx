@@ -98,7 +98,7 @@ export default function HomePage() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Dashboard</h2>
           <p className="text-gray-600">
-            Manage Nexus Dashboard clusters, security settings, and view audit logs
+            Manage Catalyst Center clusters, security settings, and view audit logs
           </p>
         </div>
 
@@ -241,7 +241,7 @@ export default function HomePage() {
               >
                 <h4 className="font-medium text-gray-900">Manage Clusters</h4>
                 <p className="text-sm text-gray-600 mt-1">
-                  Add, edit, or remove Nexus Dashboard cluster connections
+                  Add, edit, or remove Catalyst Center cluster connections
                 </p>
               </Link>
               <Link
@@ -278,7 +278,7 @@ export default function HomePage() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">About</h3>
             <div className="space-y-3 text-sm text-gray-600">
               <p>
-                The Nexus Dashboard MCP Server provides an AI-powered interface to Cisco Nexus Dashboard
+                The Catalyst Center MCP Server provides an AI-powered interface to Cisco Catalyst Center
                 through the Model Context Protocol.
               </p>
               <div className="border-t pt-3">

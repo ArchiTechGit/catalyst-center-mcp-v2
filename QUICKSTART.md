@@ -1,10 +1,10 @@
-# Nexus Dashboard MCP Server - Quick Start Guide
+# Catalyst Center MCP Server - Quick Start Guide
 
 Get up and running in 5 minutes!
 
 ## What You Get
 
-A complete Nexus Dashboard management system with:
+A complete Catalyst Center management system with:
 - **MCP Server**: 638 operations across 4 APIs (Manage, Analyze, Infra, OneManage)
 - **Web API**: FastAPI REST backend with HTTPS
 - **Web UI**: Next.js/React dashboard with authentication
@@ -16,8 +16,8 @@ A complete Nexus Dashboard management system with:
 ### Step 1: Clone and Configure
 
 ```bash
-git clone https://github.com/beye91/nexus-dashboard-mcp.git
-cd nexus-dashboard-mcp
+git clone https://github.com/ArchiTechGit/catalyst-center-mcp-v2
+cd catalyst-center-mcp
 
 # Configure your server's IP address
 echo "CERT_SERVER_IP=YOUR_SERVER_IP" > .env
@@ -60,8 +60,8 @@ Wait for all services to start (about 1-2 minutes on first run).
 1. Navigate to **Clusters** page
 2. Click **Add New Cluster**
 3. Enter details:
-   - Name: `my-nexus-cluster`
-   - URL: `https://nexus-dashboard.example.com`
+   - Name: `my-catalyst-cluster`
+   - URL: `https://catalyst-center.example.com`
    - Username: `admin`
    - Password: Your password
    - SSL Verification: Off (for self-signed certs)
@@ -77,7 +77,7 @@ Add to your Claude Desktop config:
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "npx",
       "args": [
         "mcp-remote@latest",
@@ -90,7 +90,7 @@ Add to your Claude Desktop config:
 }
 ```
 
-Restart Claude Desktop and try: "List all fabrics in my Nexus Dashboard"
+Restart Claude Desktop and try: "List all fabrics in my Catalyst Center"
 
 ## Access Points
 
@@ -121,7 +121,7 @@ docker compose down && docker compose up -d
 
 # Full reset (WARNING: deletes all data!)
 docker compose down -v
-docker volume rm nexus-mcp-certs
+docker volume rm catalyst-center-mcp-certs
 docker compose up -d --build
 ```
 
@@ -140,14 +140,14 @@ docker compose logs nd_mcp_web_api
 ### Certificate issues
 ```bash
 # Regenerate certificates
-docker volume rm nexus-mcp-certs
+docker volume rm catalyst-center-mcp-certs
 docker compose up -d
 ```
 
 ### Database issues
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d nexus_mcp
+docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Check tables
 \dt
@@ -155,7 +155,7 @@ docker compose exec nd_mcp_postgres psql -U mcp_user -d nexus_mcp
 
 ## Next Steps
 
-1. **Add more clusters**: Configure additional Nexus Dashboard instances
+1. **Add more clusters**: Configure additional Catalyst Center instances
 2. **Set up users**: Add team members with role-based access
 3. **Enable edit mode**: Allow write operations when needed
 4. **Review audit logs**: Monitor all API operations

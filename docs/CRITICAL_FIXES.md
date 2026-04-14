@@ -63,7 +63,7 @@ This document describes the five critical fixes implemented to make the platform
 - `handle_call_tool()` accepts `cluster_name` parameter
 - `AuthMiddleware` instances cached per cluster (lazy creation)
 - MCP transport resolves target cluster from user's assigned clusters (primary = first)
-- Users with multiple clusters get a `nexus_list_clusters` utility tool
+- Users with multiple clusters get a `catalyst_list_clusters` utility tool
 - `get_mcp_instance()` creates unbound MCP instance
 
 ### Architecture
@@ -71,7 +71,7 @@ This document describes the five critical fixes implemented to make the platform
 User API Token -> validate_token() -> user.clusters -> primary cluster
                                                      -> handle_call_tool(cluster_name=primary)
                                                      -> AuthMiddleware(primary) [cached]
-                                                     -> Nexus Dashboard API
+                                                     -> Catalyst Center API
 ```
 
 ## Phase 5: Workflow/Use Case Improvements
@@ -113,9 +113,9 @@ condition: {"field": "step_1.output.status", "value": "success"}
 
 Apply in order:
 ```bash
-psql -U nexus_mcp -d nexus_mcp -f src/config/migrations/005_fix_role_operation_names.sql
-psql -U nexus_mcp -d nexus_mcp -f src/config/migrations/006_add_tool_profiles.sql
-psql -U nexus_mcp -d nexus_mcp -f src/config/migrations/007_workflow_and_usecase_improvements.sql
+psql -U catalyst_center_mcp -d catalyst_center_mcp -f src/config/migrations/005_fix_role_operation_names.sql
+psql -U catalyst_center_mcp -d catalyst_center_mcp -f src/config/migrations/006_add_tool_profiles.sql
+psql -U catalyst_center_mcp -d catalyst_center_mcp -f src/config/migrations/007_workflow_and_usecase_improvements.sql
 ```
 
 ## New API Endpoints Summary

@@ -1,4 +1,4 @@
-"""Configuration settings for Nexus Dashboard MCP Server."""
+"""Configuration settings for Catalyst Center MCP Server."""
 
 import os
 from functools import lru_cache
@@ -20,26 +20,26 @@ class Settings(BaseSettings):
 
     # Database Configuration
     database_url: str = Field(
-        default="postgresql://mcp_user:changeme@localhost:5432/nexus_mcp",
+        default="postgresql://mcp_user:changeme@localhost:5432/catalyst_center_mcp",
         description="PostgreSQL database connection URL"
     )
 
-    # Nexus Dashboard Configuration
-    nexus_cluster_url: str = Field(
+    # Catalyst Center Configuration
+    catalyst_center_cluster_url: str = Field(
         default="https://192.168.70.101",
-        description="Nexus Dashboard cluster URL"
+        description="Catalyst Center cluster URL"
     )
-    nexus_username: str = Field(
+    catalyst_center_username: str = Field(
         default="admin",
-        description="Nexus Dashboard username"
+        description="Catalyst Center username"
     )
-    nexus_password: str = Field(
+    catalyst_center_password: str = Field(
         default="",
-        description="Nexus Dashboard password"
+        description="Catalyst Center password"
     )
-    nexus_verify_ssl: bool = Field(
+    catalyst_center_verify_ssl: bool = Field(
         default=False,
-        description="Verify SSL certificates for Nexus Dashboard connections"
+        description="Verify SSL certificates for Catalyst Center connections"
     )
 
     # Security Configuration
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     # API Configuration
     api_timeout: int = Field(
         default=30,
-        description="Nexus Dashboard API request timeout in seconds"
+        description="Catalyst Center API request timeout in seconds"
     )
     api_retry_attempts: int = Field(
         default=3,

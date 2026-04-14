@@ -1,4 +1,4 @@
-# Nexus Dashboard API Path Reference
+# Catalyst Center API Path Reference
 
 ## API Base Paths
 
@@ -31,7 +31,7 @@
 
 ### How Paths are Defined
 
-In the OpenAPI spec (`nexus_dashboard_manage.json`):
+In the OpenAPI spec (`intent_api_3_1_3.json`):
 
 ```json
 {
@@ -84,10 +84,10 @@ In the OpenAPI spec (`nexus_dashboard_manage.json`):
      ```
    - Final path: `/api/v1/manage/fabrics`
 
-4. **Nexus API Client** (`src/services/nexus_api.py`):
+4. **Catalyst Center API Client** (`src/services/catalyst_api.py`):
    - Receives full path: `/api/v1/manage/fabrics`
-   - Joins with base_url: `https://nexus-dashboard.example.com`
-   - Final URL: `https://nexus-dashboard.example.com/api/v1/manage/fabrics`
+   - Joins with base_url: `https://catalyst-center.example.com`
+   - Final URL: `https://catalyst-center.example.com/api/v1/manage/fabrics`
 
 ## Authentication Endpoints
 
@@ -127,10 +127,10 @@ In the OpenAPI spec (`nexus_dashboard_manage.json`):
 docker-compose logs mcp-server | grep "API request"
 
 # Test endpoint manually
-curl -k https://nexus-dashboard.example.com/api/v1/manage/fabrics
+curl -k https://catalyst-center.example.com/api/v1/manage/fabrics
 
 # Verify cluster is accessible
-curl -k https://nexus-dashboard.example.com
+curl -k https://catalyst-center.example.com
 ```
 
 ### Issue: 401 Unauthorized
@@ -156,23 +156,23 @@ curl -k https://nexus-dashboard.example.com
 
 ```bash
 # 1. Get authentication token
-curl -k -X POST https://nexus-dashboard.example.com/login \
+curl -k -X POST https://catalyst-center.example.com/login \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"Davinci!!02"}' \
   -c cookies.txt
 
 # 2. Test Manage API endpoint
-curl -k -X GET https://nexus-dashboard.example.com/api/v1/manage/fabrics \
+curl -k -X GET https://catalyst-center.example.com/api/v1/manage/fabrics \
   -b cookies.txt
 
 # 3. Test with specific fabric
-curl -k -X GET https://nexus-dashboard.example.com/api/v1/manage/fabrics/{fabricId} \
+curl -k -X GET https://catalyst-center.example.com/api/v1/manage/fabrics/{fabricId} \
   -b cookies.txt
 ```
 
 ### Automated Testing
 
-See `src/services/nexus_api.py` for the `NexusAPIClient` class that handles:
+See `src/services/catalyst_api.py` for the `CatalystCenterAPIClient` class that handles:
 - Authentication with cookies
 - Automatic retry on 401
 - Session management
@@ -214,9 +214,9 @@ async def execute_request(
 
 ## References
 
-- Nexus Dashboard API Documentation: https://developer.cisco.com/docs/nexus-dashboard/
+- Catalyst Center API Documentation: https://developer.cisco.com/docs/catalyst-center/
 - OpenAPI 3.0 Specification: https://swagger.io/specification/
-- Nexus Dashboard Manage API OpenAPI: `openapi_specs/nexus_dashboard_manage.json`
+- Catalyst Center Manage API OpenAPI: `openapi_specs/intent_api_3_1_3.json`
 
 ---
 

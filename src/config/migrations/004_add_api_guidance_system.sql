@@ -115,36 +115,12 @@ CREATE INDEX IF NOT EXISTS idx_system_prompt_sections_is_active ON system_prompt
 INSERT INTO api_guidance (api_name, display_name, description, when_to_use, when_not_to_use, priority, created_at, updated_at)
 VALUES
     (
-        'manage',
-        'Manage API',
-        'Core management operations for VLAN, VRF, BD, EPG, and policy configuration',
-        'Use for creating, updating, or deleting network configurations. Best for direct policy changes and object creation.',
-        'Avoid for read-only operations or analysis tasks. Use analyze API instead for troubleshooting.',
+        'intent',
+        'Catalyst Center Intent API',
+        'Unified Catalyst Center intent operations for inventory, assurance, automation, and policy workflows',
+        'Use for Catalyst Center operations across read and write workflows based on the selected endpoint and method.',
+        'Avoid making write operations without prerequisite validation and explicit user confirmation.',
         10, NOW(), NOW()
-    ),
-    (
-        'analyze',
-        'Analyze API',
-        'Network analysis and troubleshooting operations including connectivity, path tracing, and diagnostics',
-        'Use for troubleshooting connectivity issues, validating configurations, and analyzing network behavior.',
-        'Avoid for configuration changes or infrastructure management.',
-        20, NOW(), NOW()
-    ),
-    (
-        'infra',
-        'Infrastructure API',
-        'Infrastructure operations for fabric nodes, interfaces, and physical topology',
-        'Use for infrastructure queries, node status, interface configurations, and physical topology.',
-        'Avoid for policy or logical network configuration. Use manage API for policy changes.',
-        30, NOW(), NOW()
-    ),
-    (
-        'one_manage',
-        'OneManage API',
-        'Centralized network management operations across multiple network domains',
-        'Use for cross-domain operations and centralized management tasks when multiple fabrics are involved.',
-        'Avoid for single-fabric operations where direct manage API is more appropriate.',
-        40, NOW(), NOW()
     )
 ON CONFLICT (api_name) DO NOTHING;
 
@@ -155,14 +131,14 @@ VALUES
         'overview',
         10,
         'API Overview',
-        'You are working with Cisco Nexus Dashboard APIs. The system provides four main API categories: Manage (configuration), Analyze (troubleshooting), Infrastructure (physical topology), and OneManage (cross-domain). Always select the most appropriate API based on the user task.',
+        'You are working with Cisco Catalyst Center APIs. Use the Intent API operation set and choose the most appropriate endpoint for the user task.',
         NOW(), NOW()
     ),
     (
         'api_selection',
         20,
         'API Selection Guidelines',
-        'When selecting operations: 1) Identify if the task is configuration (manage), troubleshooting (analyze), infrastructure query (infra), or cross-domain (one_manage). 2) Check category guidance for specific operation types. 3) Consider workflows for common multi-step tasks. 4) Validate required parameters are available before attempting operations.',
+        'When selecting operations: 1) Identify the Catalyst Center domain (inventory, assurance, automation, policy, task). 2) Prefer read operations first to validate current state. 3) Validate required path/query/body parameters. 4) For write operations, confirm scope and impact before execution.',
         NOW(), NOW()
     ),
     (

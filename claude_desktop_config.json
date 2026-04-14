@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "docker",
       "args": [
         "exec",

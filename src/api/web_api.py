@@ -1,4 +1,4 @@
-"""FastAPI web application for Nexus Dashboard MCP Server management UI."""
+"""FastAPI web application for Catalyst Center MCP Server management UI."""
 
 import csv
 import io
@@ -25,7 +25,7 @@ from src.services.role_service import RoleService
 from src.services.ldap_service import LDAPService
 from src.services.guidance_service import GuidanceService
 from src.services.tool_profile_service import ToolProfileService
-from src.services.nexus_api import NexusAPIClient
+from src.services.catalyst_api import CatalystCenterAPIClient
 from src.utils.encryption import decrypt_password
 from src.api.mcp_transport import router as mcp_router
 
@@ -35,8 +35,8 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Nexus Dashboard MCP Server - Web API",
-    description="REST API for managing Nexus Dashboard MCP Server via web UI",
+    title="Catalyst Center MCP Server - Web API",
+    description="REST API for managing Catalyst Center MCP Server via web UI",
     version="1.0.0",
 )
 
@@ -582,7 +582,7 @@ startup_time = datetime.utcnow()
 
 # ==================== Authentication Helpers ====================
 
-SESSION_COOKIE_NAME = "nexus_session"
+SESSION_COOKIE_NAME = "catalyst_session"
 
 
 async def get_current_user(
@@ -910,7 +910,7 @@ async def delete_cluster(name: str):
 async def test_cluster_connection(cluster_data: ClusterCreate):
     """Test cluster connection without saving.
 
-    Creates a temporary NexusAPIClient and attempts to authenticate
+    Creates a temporary CatalystCenterAPIClient and attempts to authenticate
     to verify the connection and credentials are valid.
 
     If password is empty, attempt to use stored credentials from the database
@@ -946,7 +946,7 @@ async def test_cluster_connection(cluster_data: ClusterCreate):
                     }
 
         # Create a temporary API client with provided credentials
-        client = NexusAPIClient(
+        client = CatalystCenterAPIClient(
             base_url=url,
             username=username,
             password=password,
@@ -1017,7 +1017,7 @@ async def test_existing_cluster_connection(name: str):
             raise HTTPException(status_code=404, detail=f"Cluster '{name}' not found or inactive")
 
         # Create a temporary API client with stored credentials
-        client = NexusAPIClient(
+        client = CatalystCenterAPIClient(
             base_url=credentials["url"],
             username=credentials["username"],
             password=credentials["password"],
@@ -1896,7 +1896,7 @@ async def set_role_tool_profile(
 @app.get("/api/operations", response_model=OperationsListResponse)
 async def list_operations(
     search: Optional[str] = Query(None, description="Search by operation name"),
-    api_name: Optional[str] = Query(None, description="Filter by API (manage, analyze, infra, etc.)"),
+    api_name: Optional[str] = Query(None, description="Filter by API (intent)"),
     limit: int = Query(100, le=1000),
     offset: int = Query(0, ge=0),
     _user: User = Depends(require_auth),

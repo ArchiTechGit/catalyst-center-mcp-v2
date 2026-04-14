@@ -1,6 +1,6 @@
 # Web UI User Guide
 
-The Nexus Dashboard MCP Server includes a modern web interface for managing clusters, security settings, and viewing audit logs.
+The Catalyst Center MCP Server includes a modern web interface for managing clusters, security settings, and viewing audit logs.
 
 ## Getting Started
 
@@ -42,7 +42,7 @@ The main dashboard provides:
 
 **Path:** `/clusters`
 
-Manage Nexus Dashboard cluster connections with full CRUD operations:
+Manage Catalyst Center cluster connections with full CRUD operations:
 
 #### Features
 - **View All Clusters**: Table view showing name, URL, username, status, and SSL verification
@@ -56,7 +56,7 @@ Manage Nexus Dashboard cluster connections with full CRUD operations:
 1. Click "Add New Cluster"
 2. Fill in the form:
    - **Cluster Name**: Unique identifier (cannot be changed later)
-   - **URL**: Full URL to Nexus Dashboard (e.g., `https://nexus.example.com`)
+   - **URL**: Full URL to Catalyst Center (e.g., `https://catalyst-center.example.com`)
    - **Username**: Admin username
    - **Password**: Admin password (stored securely in Vault)
    - **Verify SSL**: Check to validate SSL certificates
@@ -183,7 +183,7 @@ Displays detailed information for each operation:
 
 The top navigation bar is consistent across all pages:
 
-- **Nexus Dashboard MCP Server** (logo/home link)
+- **Catalyst Center MCP Server** (logo/home link)
 - **Dashboard**: Overview and statistics
 - **Clusters**: Cluster management
 - **Security**: Security settings

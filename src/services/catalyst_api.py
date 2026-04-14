@@ -1,4 +1,4 @@
-"""Nexus Dashboard API client for authentication and requests."""
+"""Catalyst Center API client for authentication and requests."""
 
 import logging
 from typing import Any, Dict, Optional
@@ -11,8 +11,8 @@ from src.config.settings import get_settings
 logger = logging.getLogger(__name__)
 
 
-class NexusAPIClient:
-    """Client for interacting with Nexus Dashboard APIs."""
+class CatalystCenterAPIClient:
+    """Client for interacting with Catalyst Center APIs."""
 
     def __init__(
         self,
@@ -21,10 +21,10 @@ class NexusAPIClient:
         password: str,
         verify_ssl: bool = False,
     ):
-        """Initialize Nexus Dashboard API client.
+        """Initialize Catalyst Center API client.
 
         Args:
-            base_url: Nexus Dashboard base URL
+            base_url: Catalyst Center base URL
             username: Username for authentication
             password: Password for authentication
             verify_ssl: Whether to verify SSL certificates
@@ -35,9 +35,8 @@ class NexusAPIClient:
         self.verify_ssl = verify_ssl
         self.settings = get_settings()
 
-        # Session management
+        # Token-based auth for Catalyst Center
         self.access_token: Optional[str] = None
-        self.cookies: Optional[dict] = None
 
         # HTTP client configuration
         self.client = httpx.AsyncClient(
@@ -47,44 +46,31 @@ class NexusAPIClient:
         )
 
     async def authenticate(self) -> bool:
-        """Authenticate with Nexus Dashboard using Basic Auth.
+        """Authenticate with Catalyst Center using Basic Auth.
 
         Returns:
             True if authentication successful, False otherwise
         """
         try:
-            # Nexus Dashboard typically uses /login endpoint with Basic Auth
-            login_url = urljoin(self.base_url, "/login")
+            # Catalyst Center token endpoint
+            login_url = urljoin(self.base_url, "/dna/system/api/v1/auth/token")
 
             response = await self.client.post(
                 login_url,
-                json={"username": self.username, "password": self.password},
-                headers={"Content-Type": "application/json"},
+                auth=(self.username, self.password),
+                headers={"Accept": "application/json"},
             )
 
             if response.status_code == 200:
-                # Extract session cookies or token from response
-                self.cookies = dict(response.cookies)
-
-                # Some Nexus Dashboard versions return a token in the response
-                if response.headers.get("set-cookie"):
-                    logger.info("Authentication successful, session cookies obtained")
-                    return True
-
-                # Check for token in response body
                 try:
                     data = response.json()
-                    if "token" in data:
-                        self.access_token = data["token"]
-                        logger.info("Authentication successful, token obtained")
+                    # API may return either Token or token
+                    self.access_token = data.get("Token") or data.get("token")
+                    if self.access_token:
+                        logger.info("Authentication successful, auth token obtained")
                         return True
                 except Exception:
-                    pass
-
-                # If we got 200 but no clear token, assume cookies are enough
-                if self.cookies:
-                    logger.info("Authentication successful using cookies")
-                    return True
+                    logger.error("Authentication response was not valid JSON")
 
             logger.error(f"Authentication failed with status {response.status_code}")
             return False
@@ -101,7 +87,7 @@ class NexusAPIClient:
         json_data: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
     ) -> httpx.Response:
-        """Make authenticated request to Nexus Dashboard.
+        """Make authenticated request to Catalyst Center.
 
         Args:
             method: HTTP method (GET, POST, PUT, DELETE, etc.)
@@ -117,10 +103,10 @@ class NexusAPIClient:
             httpx.HTTPStatusError: If request fails
         """
         # Ensure we're authenticated
-        if not self.cookies and not self.access_token:
+        if not self.access_token:
             authenticated = await self.authenticate()
             if not authenticated:
-                raise RuntimeError("Failed to authenticate with Nexus Dashboard")
+                raise RuntimeError("Failed to authenticate with Catalyst Center")
 
         # Build full URL
         url = urljoin(self.base_url, path.lstrip("/"))
@@ -128,7 +114,7 @@ class NexusAPIClient:
         # Prepare headers
         request_headers = headers or {}
         if self.access_token:
-            request_headers["Authorization"] = f"Bearer {self.access_token}"
+            request_headers["X-Auth-Token"] = self.access_token
 
         # Make request with retry logic
         max_retries = self.settings.api_retry_attempts
@@ -142,7 +128,6 @@ class NexusAPIClient:
                     params=params,
                     json=json_data,
                     headers=request_headers,
-                    cookies=self.cookies,
                 )
 
                 # Handle 401 by re-authenticating and retrying once

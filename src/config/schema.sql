@@ -1,4 +1,4 @@
--- Nexus Dashboard MCP Server Database Schema
+-- Catalyst Center MCP Server Database Schema
 
 -- Schema migrations tracking (keeps track of which migration files have been applied)
 CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
     applied_at TIMESTAMP DEFAULT NOW() NOT NULL
 );
 
--- Clusters table for storing Nexus Dashboard cluster credentials
+-- Clusters table for storing Catalyst Center cluster credentials
 CREATE TABLE IF NOT EXISTS clusters (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
@@ -299,7 +299,7 @@ ON CONFLICT (name) DO NOTHING;
 
 -- ==================== Comments ====================
 
-COMMENT ON TABLE clusters IS 'Stores Nexus Dashboard cluster connection information with encrypted credentials';
+COMMENT ON TABLE clusters IS 'Stores Catalyst Center cluster connection information with encrypted credentials';
 COMMENT ON TABLE security_config IS 'Global security configuration for the MCP server';
 COMMENT ON TABLE api_endpoints IS 'Registry of all available API endpoints from OpenAPI specs';
 COMMENT ON TABLE audit_log IS 'Audit trail of all operations performed through the MCP server';
@@ -410,17 +410,14 @@ CREATE INDEX IF NOT EXISTS idx_system_prompt_sections_section_name ON system_pro
 -- Default API guidance
 INSERT INTO api_guidance (api_name, display_name, description, when_to_use, when_not_to_use, priority)
 VALUES
-    ('manage', 'Manage API', 'Core management operations for VLAN, VRF, BD, EPG, and policy configuration', 'Use for creating, updating, or deleting network configurations.', 'Avoid for read-only operations or analysis tasks.', 10),
-    ('analyze', 'Analyze API', 'Network analysis and troubleshooting operations', 'Use for troubleshooting connectivity issues and analyzing network behavior.', 'Avoid for configuration changes.', 20),
-    ('infra', 'Infrastructure API', 'Infrastructure operations for fabric nodes and interfaces', 'Use for infrastructure queries and node status.', 'Avoid for policy configuration.', 30),
-    ('one_manage', 'OneManage API', 'Centralized management across multiple network domains', 'Use for cross-domain operations.', 'Avoid for single-fabric operations.', 40)
+    ('intent', 'Catalyst Center Intent API', 'Unified Catalyst Center intent operations for inventory, assurance, automation, and policy workflows', 'Use for Catalyst Center operations across read and write workflows based on endpoint semantics.', 'Avoid write operations without prerequisite validation and explicit user confirmation.', 10)
 ON CONFLICT (api_name) DO NOTHING;
 
 -- Default system prompt sections
 INSERT INTO system_prompt_sections (section_name, section_order, title, content)
 VALUES
-    ('overview', 10, 'API Overview', 'You are working with Cisco Nexus Dashboard APIs. Select the appropriate API based on the task.'),
-    ('api_selection', 20, 'API Selection Guidelines', 'Identify if the task is configuration (manage), troubleshooting (analyze), infrastructure query (infra), or cross-domain (one_manage).'),
+    ('overview', 10, 'API Overview', 'You are working with Cisco Catalyst Center APIs. Select the appropriate API based on the task.'),
+    ('api_selection', 20, 'API Selection Guidelines', 'Identify the Catalyst Center domain (inventory, assurance, automation, policy, task) and choose the corresponding Intent API operation.'),
     ('best_practices', 30, 'Best Practices', 'Always verify prerequisites before configuration changes. Use read operations to validate state.')
 ON CONFLICT (section_name) DO NOTHING;
 

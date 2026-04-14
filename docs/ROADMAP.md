@@ -2,7 +2,7 @@
 
 ## Overview
 
-This roadmap outlines the development plan for the Nexus Dashboard MCP Server from initial implementation to production-ready enterprise deployment.
+This roadmap outlines the development plan for the Catalyst Center MCP Server from initial implementation to production-ready enterprise deployment.
 
 ## Phase 1: Foundation ✅ CURRENT
 
@@ -20,11 +20,11 @@ This roadmap outlines the development plan for the Nexus Dashboard MCP Server fr
 - [x] PostgreSQL database with encrypted credentials
 - [x] Docker containerization
 - [x] Initial documentation (README, ARCHITECTURE, DEPLOYMENT)
-- [ ] Testing with development Nexus Dashboard cluster
+- [ ] Testing with development Catalyst Center cluster
 
 ### Success Criteria
 
-- Successfully authenticate with Nexus Dashboard
+- Successfully authenticate with Catalyst Center
 - Execute GET operations (read-only mode)
 - Toggle edit mode via environment variable
 - All operations logged to audit table
@@ -34,7 +34,7 @@ This roadmap outlines the development plan for the Nexus Dashboard MCP Server fr
 
 **Timeline**: Week 3
 **Status**: Planned
-**Goal**: Complete API coverage for all Nexus Dashboard services
+**Goal**: Complete API coverage for all Catalyst Center services
 
 ### Deliverables
 
@@ -270,7 +270,7 @@ This roadmap outlines the development plan for the Nexus Dashboard MCP Server fr
 | Risk | Impact | Mitigation |
 |------|--------|------------|
 | FastMCP breaking changes | High | Pin versions, maintain fork if needed |
-| Nexus Dashboard API changes | Medium | Version-specific specs, adapter pattern |
+| Catalyst Center API changes | Medium | Version-specific specs, adapter pattern |
 | Performance bottlenecks | Medium | Early load testing, caching strategy |
 | Security vulnerabilities | Critical | Regular audits, dependency scanning |
 
@@ -280,13 +280,13 @@ This roadmap outlines the development plan for the Nexus Dashboard MCP Server fr
 |------|--------|------------|
 | Low community adoption | Low | Focus on docs, demos, engagement |
 | Maintenance burden | Medium | Automation, modular design, CI/CD |
-| Limited Nexus Dashboard access | Low | Use DevNet sandbox, mock data |
+| Limited Catalyst Center access | Low | Use DevNet sandbox, mock data |
 
 ## Dependencies
 
 ### External
 
-- Nexus Dashboard API stability
+- Catalyst Center API stability
 - MCP protocol evolution
 - Docker/container ecosystem
 - PostgreSQL compatibility
@@ -310,8 +310,8 @@ This roadmap outlines the development plan for the Nexus Dashboard MCP Server fr
 
 ### Infrastructure
 
-- **Development**: Docker host, Nexus Dashboard dev cluster
-- **Testing**: CI/CD pipeline, test Nexus Dashboard
+- **Development**: Docker host, Catalyst Center dev cluster
+- **Testing**: CI/CD pipeline, test Catalyst Center
 - **Production**: Docker registry, monitoring tools
 
 ## Metrics and KPIs

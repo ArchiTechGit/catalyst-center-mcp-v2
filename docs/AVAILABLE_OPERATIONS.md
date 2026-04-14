@@ -1,4 +1,4 @@
-# Available Operations - Nexus Dashboard Manage API
+# Available Operations - Catalyst Center Manage API
 
 **Total Operations**: 202
 **Status**: All operations available as MCP tools
@@ -215,7 +215,7 @@ sys.path.insert(0, '/app')
 from src.core.api_loader import APILoader
 
 loader = APILoader()
-spec = loader.load_openapi_spec('nexus_dashboard_manage.json')
+spec = loader.load_openapi_spec('intent_api_3_1_3.json')
 operations = loader.list_operations(spec)
 
 for op in operations:
@@ -226,11 +226,11 @@ for op in operations:
 ## API Documentation
 
 For detailed information about each operation:
-- **OpenAPI Spec**: `openapi_specs/nexus_dashboard_manage.json`
-- **Cisco Documentation**: https://developer.cisco.com/docs/nexus-dashboard/
+- **OpenAPI Spec**: `openapi_specs/intent_api_3_1_3.json`
+- **Cisco Documentation**: https://developer.cisco.com/docs/catalyst-center/
 
 ---
 
 **Last Updated**: November 23, 2025
-**API Version**: Nexus Dashboard Manage v1.0.130
+**API Version**: Catalyst Center Manage v1.0.130
 **Status**: All 202 operations available and tested

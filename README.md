@@ -1,16 +1,16 @@
-# Nexus Dashboard MCP Server
+# Catalyst Center MCP Server
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
 [![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](requirements.txt)
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black?logo=next.js&logoColor=white)](web-ui/package.json)
 
-A comprehensive Model Context Protocol (MCP) server for Cisco Nexus Dashboard, enabling AI agents like Claude to interact with Nexus Dashboard APIs for intelligent network automation and management.
+A comprehensive Model Context Protocol (MCP) server for Cisco Catalyst Center, enabling AI agents like Claude to interact with Catalyst Center APIs for intelligent network automation and management.
 
 ## Features
 
 ### Core Capabilities
-- **Complete API Coverage**: Access to 638+ operations across 5 Nexus Dashboard APIs
+- **Complete API Coverage**: Access to 638+ operations across 5 Catalyst Center APIs
   - Manage API (146 endpoints): Fabrics, switches, VLANs, VRFs, networks, interfaces
   - Analyze API: Telemetry, insights, anomalies, compliance
   - Infrastructure API: System health, licensing, user management
@@ -45,14 +45,14 @@ A comprehensive Model Context Protocol (MCP) server for Cisco Nexus Dashboard, e
 ### Prerequisites
 
 - **Docker** 20.10+ and Docker Compose 2.0+
-- **Cisco Nexus Dashboard** 4.1+ with NDFC 12.x
+- **Cisco Catalyst Center** 4.1+ with NDFC 12.x
 - **Node.js** 18+ (for remote MCP access via mcp-remote)
 
 ### 1. Clone and Configure
 
 ```bash
-git clone https://github.com/beye91/nexus-dashboard-mcp.git
-cd nexus-dashboard-mcp
+git clone https://github.com/ArchiTechGit/catalyst-center-mcp-v2
+cd catalyst-center-mcp
 
 # Create environment file with your server's IP address
 echo "CERT_SERVER_IP=YOUR_SERVER_IP" > .env
@@ -91,7 +91,7 @@ This will:
 4. Configure your first cluster:
    - Navigate to **Clusters** page
    - Click "Add New Cluster"
-   - Enter your Nexus Dashboard details
+   - Enter your Catalyst Center details
    - Click "Test Connection" to verify
    - Save the cluster configuration
 
@@ -108,7 +108,7 @@ Add to your Claude Desktop configuration:
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "npx",
       "args": [
         "mcp-remote@latest",
@@ -130,7 +130,7 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "docker",
       "args": [
         "exec",
@@ -144,7 +144,7 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
 }
 ```
 
-Restart Claude Desktop, and you'll see the Nexus Dashboard tools available!
+Restart Claude Desktop, and you'll see the Catalyst Center tools available!
 
 ## Architecture
 
@@ -169,7 +169,7 @@ Restart Claude Desktop, and you'll see the Nexus Dashboard tools available!
                     +----------------------+----------------------+
                     |                      |                      |
            +--------+--------+    +--------+--------+    +--------+--------+
-           |   PostgreSQL    |    |   MCP Server    |    | Nexus Dashboard |
+           |   PostgreSQL    |    |   MCP Server    |    | Catalyst Center |
            |   Port 15432    |    |   (stdio)       |    |   Clusters      |
            +-----------------+    +-----------------+    +-----------------+
 
@@ -206,10 +206,10 @@ DOCKER_EXTERNAL_NETWORK=openshell-cluster-nemoclaw
 # Docker Compose sets this to http://nd_mcp_web_api:7100 by default
 BACKEND_API_URL=http://nd_mcp_web_api:7100
 
-# Optional: Nexus Dashboard defaults (can be configured via Web UI)
-NEXUS_CLUSTER_URL=https://nexus-dashboard.example.com
-NEXUS_USERNAME=admin
-NEXUS_PASSWORD=YourPassword
+# Optional: Catalyst Center defaults (can be configured via Web UI)
+CATALYST_CENTER_CLUSTER_URL=https://catalyst-center.example.com
+CATALYST_CENTER_USERNAME=admin
+CATALYST_CENTER_PASSWORD=YourPassword
 ```
 
 **Generate Encryption Key:**
@@ -222,7 +222,7 @@ python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().
 ```env
 # SSL Certificate Configuration
 CERT_DAYS=365                    # Certificate validity (default: 365)
-CERT_CN=nexus-dashboard          # Certificate common name
+CERT_CN=catalyst-center          # Certificate common name
 
 # Security
 EDIT_MODE_ENABLED=false          # Enable write operations
@@ -237,13 +237,13 @@ LOG_LEVEL=INFO                   # DEBUG, INFO, WARNING, ERROR
 ### HTTPS Configuration
 
 Self-signed certificates are automatically generated on first startup:
-- Stored in Docker volume `nexus-mcp-certs`
+- Stored in Docker volume `catalyst-center-mcp-certs`
 - Valid for 365 days (configurable via `CERT_DAYS`)
 - Includes localhost, 127.0.0.1, and your server IP in SAN
 
 To regenerate certificates:
 ```bash
-docker volume rm nexus-mcp-certs
+docker volume rm catalyst-center-mcp-certs
 docker compose up -d
 ```
 
@@ -290,14 +290,14 @@ docker compose logs -f
 docker compose exec nd_mcp_web_api openssl x509 -in /app/certs/server.crt -text -noout
 
 # Regenerate certificates
-docker volume rm nexus-mcp-certs
+docker volume rm catalyst-center-mcp-certs
 docker compose up -d
 ```
 
 ### Database Issues
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d nexus_mcp
+docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Check tables
 \dt
@@ -321,8 +321,8 @@ curl -k https://localhost:7443
 
 ```bash
 # Clone repository
-git clone https://github.com/beye91/nexus-dashboard-mcp.git
-cd nexus-dashboard-mcp
+git clone https://github.com/ArchiTechGit/catalyst-center-mcp-v2
+cd catalyst-center-mcp
 
 # Create virtual environment
 python -m venv venv
@@ -350,7 +350,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 ## Acknowledgments
 
 - **Anthropic** - For the Claude AI platform and MCP protocol
-- **Cisco** - For Nexus Dashboard APIs
+- **Cisco** - For Catalyst Center APIs
 - **FastMCP** - For the excellent MCP framework
 
 ---

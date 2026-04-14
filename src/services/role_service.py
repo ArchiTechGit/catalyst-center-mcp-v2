@@ -345,7 +345,7 @@ class RoleService:
 
         Args:
             search: Search term to filter by name/description
-            api_name: Filter by API name (manage, analyze, infra, etc.)
+            api_name: Filter by API name (intent)
             limit: Maximum results to return
             offset: Number of results to skip
 

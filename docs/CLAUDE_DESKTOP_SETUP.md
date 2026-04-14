@@ -2,11 +2,11 @@
 
 ## Overview
 
-This guide explains how to connect Claude Desktop to the Nexus Dashboard MCP Server, enabling Claude to interact with your Cisco Nexus Dashboard infrastructure.
+This guide explains how to connect Claude Desktop to the Catalyst Center MCP Server, enabling Claude to interact with your Cisco Catalyst Center infrastructure.
 
 ## Prerequisites
 
-- Nexus Dashboard MCP Server deployed and running
+- Catalyst Center MCP Server deployed and running
 - Claude Desktop installed
 - For remote connections: Node.js 18+ installed locally
 
@@ -29,7 +29,7 @@ For accessing the MCP server running on a remote host:
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "npx",
       "args": [
         "mcp-remote@latest",
@@ -57,7 +57,7 @@ For Claude Desktop running on the same machine as Docker:
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "docker",
       "args": [
         "exec",
@@ -96,7 +96,7 @@ $env:NODE_TLS_REJECT_UNAUTHORIZED=0
 1. Download the server certificate:
    ```bash
    openssl s_client -connect YOUR_SERVER_IP:8444 -showcerts </dev/null 2>/dev/null | \
-     openssl x509 -outform PEM > nexus-mcp.crt
+     openssl x509 -outform PEM > catalyst-center-mcp.crt
    ```
 
 2. Add to your system's trust store:
@@ -109,7 +109,7 @@ $env:NODE_TLS_REJECT_UNAUTHORIZED=0
 After restarting Claude Desktop:
 
 1. Look for the MCP server indicator (hammer icon) in Claude Desktop
-2. You should see "nexus-dashboard" listed as an available server
+2. You should see "catalyst-center" listed as an available server
 3. The indicator should show a green status
 
 ### Test Query
@@ -117,7 +117,7 @@ After restarting Claude Desktop:
 Try asking Claude:
 
 ```
-"List all fabrics in my Nexus Dashboard"
+"List all fabrics in my Catalyst Center"
 ```
 
 or
@@ -173,7 +173,7 @@ docker compose up -d
 ```json
 {
   "mcpServers": {
-    "nexus-dashboard": {
+    "catalyst-center": {
       "command": "npx",
       "args": [
         "mcp-remote@latest",
@@ -255,7 +255,7 @@ All MCP operations are logged. View them at:
 - Web UI: `https://YOUR_SERVER_IP:7443/audit`
 - Database:
   ```bash
-  docker compose exec nd_mcp_postgres psql -U mcp_user -d nexus_mcp -c \
+  docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp -c \
     "SELECT * FROM audit_log ORDER BY timestamp DESC LIMIT 20;"
   ```
 
@@ -264,7 +264,7 @@ All MCP operations are logged. View them at:
 ### Read-Only Examples
 
 ```
-"Show me all fabrics configured in Nexus Dashboard"
+"Show me all fabrics configured in Catalyst Center"
 
 "What anomalies have been detected in the last 24 hours?"
 

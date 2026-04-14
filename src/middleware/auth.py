@@ -1,17 +1,17 @@
-"""Authentication middleware for Nexus Dashboard API requests."""
+"""Authentication middleware for Catalyst Center API requests."""
 
 import logging
 from typing import Any, Callable, Dict, Optional
 
 from src.core.api_registry import APIRegistry
 from src.services.credential_manager import CredentialManager
-from src.services.nexus_api import NexusAPIClient
+from src.services.catalyst_api import CatalystCenterAPIClient
 
 logger = logging.getLogger(__name__)
 
 
 class AuthMiddleware:
-    """Middleware for handling authentication to Nexus Dashboard."""
+    """Middleware for handling authentication to Catalyst Center."""
 
     def __init__(self, cluster_name: str = "default"):
         """Initialize authentication middleware.
@@ -21,13 +21,13 @@ class AuthMiddleware:
         """
         self.cluster_name = cluster_name
         self.credential_manager = CredentialManager()
-        self.api_client: Optional[NexusAPIClient] = None
+        self.api_client: Optional[CatalystCenterAPIClient] = None
 
-    async def get_api_client(self) -> NexusAPIClient:
+    async def get_api_client(self) -> CatalystCenterAPIClient:
         """Get or create authenticated API client.
 
         Returns:
-            Authenticated NexusAPIClient instance
+            Authenticated CatalystCenterAPIClient instance
 
         Raises:
             RuntimeError: If credentials not found or authentication fails
@@ -53,7 +53,7 @@ class AuthMiddleware:
             )
 
         # Create and authenticate API client
-        self.api_client = NexusAPIClient(
+        self.api_client = CatalystCenterAPIClient(
             base_url=credentials["url"],
             username=credentials["username"],
             password=credentials["password"],
@@ -74,7 +74,7 @@ class AuthMiddleware:
         self,
         method: str,
         path: str,
-        api_name: str = "manage",
+        api_name: str = "intent",
         params: Optional[Dict[str, Any]] = None,
         json_data: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
@@ -82,8 +82,8 @@ class AuthMiddleware:
 
         Args:
             method: HTTP method
-            path: API endpoint path (will be prefixed with appropriate API base path)
-            api_name: Name of the API (manage, analyze, infra, onemanage)
+            path: API endpoint path (may be prefixed with API base path if configured)
+            api_name: Name of the API (intent)
             params: Query parameters
             json_data: JSON request body
 
@@ -95,14 +95,10 @@ class AuthMiddleware:
         """
         client = await self.get_api_client()
 
-        # Prepend the API base path if not already present
-        if not path.startswith("/api/"):
-            base_path = APIRegistry.get_base_path_for_api(api_name)
-            if base_path:
-                path = f"{base_path}{path}"
-            else:
-                # Fallback to manage API
-                path = f"/api/v1/manage{path}"
+        # Prepend the API base path only when path is relative
+        if not path.startswith("/"):
+            base_path = APIRegistry.get_base_path_for_api(api_name) or ""
+            path = f"{base_path}/{path}" if base_path else f"/{path}"
 
         try:
             response = await client.request(

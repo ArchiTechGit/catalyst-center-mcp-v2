@@ -65,35 +65,35 @@ ON CONFLICT (name) DO NOTHING;
 -- which matches the format used throughout role_operations and MCP tool names.
 -- ============================================================================
 
--- "Read-Only Analyst": GET operations from the analyze API only
+-- "Read-Only Analyst": GET operations from the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
     (SELECT id FROM tool_profiles WHERE name = 'Read-Only Analyst'),
     api_name || '_' || operation_id,
     NOW()
 FROM api_endpoints
-WHERE api_name = 'analyze'
+WHERE api_name = 'intent'
   AND http_method = 'GET'
 ON CONFLICT DO NOTHING;
 
--- "Network Operator": All methods across analyze and manage APIs
+-- "Network Operator": All methods across the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
     (SELECT id FROM tool_profiles WHERE name = 'Network Operator'),
     api_name || '_' || operation_id,
     NOW()
 FROM api_endpoints
-WHERE api_name IN ('analyze', 'manage')
+WHERE api_name = 'intent'
 ON CONFLICT DO NOTHING;
 
--- "Infrastructure Viewer": GET operations from infra and analyze APIs
+-- "Infrastructure Viewer": GET operations from the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
     (SELECT id FROM tool_profiles WHERE name = 'Infrastructure Viewer'),
     api_name || '_' || operation_id,
     NOW()
 FROM api_endpoints
-WHERE api_name IN ('infra', 'analyze')
+WHERE api_name = 'intent'
   AND http_method = 'GET'
 ON CONFLICT DO NOTHING;
 
