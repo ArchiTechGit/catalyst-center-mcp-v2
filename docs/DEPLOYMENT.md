@@ -25,7 +25,7 @@
                     |                    |
                [HTTPS]              [HTTPS]
                     |                    |
-            Port 7443            Port 8444
+                  Port 7444            Port 8445
                     |                    |
 +------------------+    +--------------------------+
 |    Web UI        |    |        Web API           |
@@ -111,12 +111,12 @@ docker compose ps
 docker compose logs -f
 
 # Test API health
-curl -k https://localhost:8444/api/health
+curl -k https://localhost:8445/api/health
 ```
 
 ### Step 5: Initial Setup
 
-1. Open browser to `https://YOUR_SERVER_IP:7443`
+1. Open browser to `https://YOUR_SERVER_IP:7444`
 2. Accept the self-signed certificate warning
 3. Create the initial admin user:
    - Username: `admin`
@@ -128,9 +128,9 @@ curl -k https://localhost:8444/api/health
 
 | Service | Port | Protocol | Description | Configurable |
 |---------|------|----------|-------------|--------------|
-| Web UI | 7443 | HTTPS | Management interface | `WEB_UI_PORT` |
-| Web UI Internal | 7100 | HTTP | Internal Next.js server (localhost only) | `WEB_UI_INTERNAL_PORT` |
-| Web API | 8444 | HTTPS | REST API and MCP SSE | `WEB_API_PORT` |
+| Web UI | 7444 | HTTPS | Management interface | `WEB_UI_PORT` |
+| Web UI Internal | 7101 | HTTP | Internal Next.js server (localhost only) | `WEB_UI_INTERNAL_PORT` |
+| Web API | 8445 | HTTPS | REST API and MCP SSE | `WEB_API_PORT` |
 | Internal HTTP | 8001 | HTTP | Web UI to API proxy | `INTERNAL_HTTP_PORT` |
 | PostgreSQL | 15432 | TCP | Database | via docker-compose |
 
@@ -150,15 +150,15 @@ DOCKER_EXTERNAL_NETWORK=your-existing-bridge-network
 
 ### Port Configuration
 
-The internal Next.js port (default: 7100) can be configured to avoid conflicts with other services (e.g., Grafana which commonly uses port 3000). Set the following environment variables in your `.env` file:
+The internal Next.js port (default: 7101) can be configured to avoid conflicts with other services (e.g., Grafana which commonly uses port 3000). Set the following environment variables in your `.env` file:
 
 ```env
-# External HTTPS port for Web UI (default: 7443)
-WEB_UI_PORT=7443
+# External HTTPS port for Web UI (default: 7444)
+WEB_UI_PORT=7444
 
-# Internal Next.js port - localhost only (default: 7100)
+# Internal Next.js port - localhost only (default: 7101)
 # Change this if you have conflicts with other services
-WEB_UI_INTERNAL_PORT=7100
+WEB_UI_INTERNAL_PORT=7101
 ```
 
 ## SSL/TLS Configuration
@@ -219,10 +219,10 @@ To use your own certificates:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WEB_UI_PORT` | `7443` | External HTTPS port for Web UI |
-| `WEB_UI_INTERNAL_PORT` | `7100` | Internal Next.js port (localhost only) |
-| `WEB_API_PORT` | `8444` | External HTTPS port for Web API |
-| `INTERNAL_HTTP_PORT` | `7100` | Internal HTTP port for API proxy |
+| `WEB_UI_PORT` | `7444` | External HTTPS port for Web UI |
+| `WEB_UI_INTERNAL_PORT` | `7101` | Internal Next.js port (localhost only) |
+| `WEB_API_PORT` | `8445` | External HTTPS port for Web API |
+| `INTERNAL_HTTP_PORT` | `7101` | Internal HTTP port for API proxy |
 
 ### Security
 
@@ -259,7 +259,7 @@ For connecting to the MCP server running on a different host:
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only"
       ]
@@ -284,7 +284,7 @@ For Claude Desktop running on the same machine:
       "args": [
         "exec",
         "-i",
-        "nd_mcp_mcp_server",
+        "catc_mcp_mcp_server",
         "python",
         "src/main.py"
       ]
@@ -310,13 +310,13 @@ For Claude Desktop running on the same machine:
 docker compose ps
 
 # View detailed health status
-docker inspect nd_mcp_web_api --format='{{.State.Health.Status}}'
+docker inspect catc_mcp_web_api --format='{{.State.Health.Status}}'
 ```
 
 ### API Health Endpoint
 
 ```bash
-curl -k https://localhost:8444/api/health
+curl -k https://localhost:8445/api/health
 ```
 
 Response:
@@ -335,14 +335,14 @@ Response:
 
 ### Web UI Health Page
 
-Access `https://YOUR_SERVER_IP:7443/health` for a visual health dashboard.
+Access `https://YOUR_SERVER_IP:7444/health` for a visual health dashboard.
 
 ## Database Management
 
 ### Connect to Database
 
 ```bash
-docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
+docker compose exec catc_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 ```
 
 ### Common Queries
@@ -368,7 +368,7 @@ SELECT id, username, email, is_active FROM users;
 
 ```bash
 # Create backup
-docker compose exec nd_mcp_postgres pg_dump -U mcp_user catalyst_center_mcp > backup-$(date +%Y%m%d).sql
+docker compose exec catc_mcp_postgres pg_dump -U mcp_user catalyst_center_mcp > backup-$(date +%Y%m%d).sql
 
 # Restore from backup
 docker compose exec -T postgres psql -U mcp_user catalyst_center_mcp < backup-20250101.sql
@@ -380,28 +380,28 @@ docker compose exec -T postgres psql -U mcp_user catalyst_center_mcp < backup-20
 
 ```bash
 # Check logs for errors
-docker compose logs nd_mcp_web_api
-docker compose logs nd_mcp_web_ui
+docker compose logs catc_mcp_web_api
+docker compose logs catc_mcp_web_ui
 
 # Verify port availability
-netstat -tlnp | grep -E '7443|8444|15432'
+netstat -tlnp | grep -E '7444|8445|15432'
 ```
 
 ### Certificate Errors
 
 ```bash
 # View certificate details
-docker compose exec nd_mcp_web_api openssl x509 -in /app/certs/server.crt -text -noout
+docker compose exec catc_mcp_web_api openssl x509 -in /app/certs/server.crt -text -noout
 
 # Check certificate expiration
-docker compose exec nd_mcp_web_api openssl x509 -in /app/certs/server.crt -noout -dates
+docker compose exec catc_mcp_web_api openssl x509 -in /app/certs/server.crt -noout -dates
 ```
 
 ### Database Connection Issues
 
 ```bash
 # Test database connectivity
-docker compose exec nd_mcp_postgres pg_isready -U mcp_user
+docker compose exec catc_mcp_postgres pg_isready -U mcp_user
 
 # Check database logs
 docker compose logs postgres
@@ -414,7 +414,7 @@ docker compose logs postgres
 docker compose logs -f web-api
 
 # Test internal HTTP endpoint
-curl http://localhost:8001/api/health
+curl http://localhost:7101/api/health
 ```
 
 ## Updating
@@ -452,7 +452,7 @@ docker compose up -d
 - [ ] Set `CERT_SERVER_IP` to your production server IP
 - [ ] Generate and configure unique `ENCRYPTION_KEY`
 - [ ] Generate and configure unique `SESSION_SECRET_KEY`
-- [ ] Configure firewall to allow ports 7443, 8444, 15432
+- [ ] Configure firewall to allow ports 7444, 8445, 15432
 - [ ] Change default admin password after first login
 - [ ] Keep `EDIT_MODE_ENABLED=false` unless needed
 - [ ] Set up regular database backups

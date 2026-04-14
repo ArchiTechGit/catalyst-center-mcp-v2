@@ -59,7 +59,7 @@ Our implementation addresses these gaps with a defense-in-depth approach:
                [HTTPS/TLS]          [HTTPS/TLS]
             (Self-signed or CA)   (Self-signed or CA)
                     |                    |
-            Port 7443            Port 8444
+                  Port 7444            Port 8445
                     |                    |
 +-------------------+    +---------------------------+
 |     Web UI        |    |         Web API           |
@@ -399,7 +399,7 @@ async def verify_mcp_token(request: Request):
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://192.168.1.213:8444/mcp/sse",
+        "https://192.168.1.213:8445/mcp/sse",
         "--transport", "sse-only",
         "--header", "Authorization: Bearer your-secure-token-here"
       ]
@@ -436,8 +436,8 @@ Before deploying an MCP server to production:
 - [ ] **Keep edit mode disabled** unless actively making changes
 
 - [ ] **Configure firewall rules**
-  - Allow 7443 (Web UI) from trusted networks only
-  - Allow 8444 (API/MCP) from Claude Desktop clients only
+  - Allow 7444 (Web UI) from trusted networks only
+  - Allow 8445 (API/MCP) from Claude Desktop clients only
   - Block 15432 (PostgreSQL) from external access
 
 - [ ] **Set up log rotation** for audit logs

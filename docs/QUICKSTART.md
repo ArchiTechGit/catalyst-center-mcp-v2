@@ -56,12 +56,12 @@ docker compose ps
 docker compose logs -f
 
 # Test API health
-curl -k https://localhost:8444/api/health
+curl -k https://localhost:8445/api/health
 ```
 
 ### 5. Initial Setup
 
-1. Open browser: `https://YOUR_SERVER_IP:7443`
+1. Open browser: `https://YOUR_SERVER_IP:7444`
 2. Accept the self-signed certificate warning
 3. Create admin account:
    - Username: `admin`
@@ -98,7 +98,7 @@ Add to your Claude Desktop config file:
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only"
       ]
@@ -145,10 +145,10 @@ Enable edit mode in Web UI > Security, then:
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Web UI | `https://YOUR_SERVER_IP:7443` | Management dashboard |
-| Web API | `https://YOUR_SERVER_IP:8444` | REST API |
-| API Docs | `https://YOUR_SERVER_IP:8444/docs` | Swagger UI |
-| MCP SSE | `https://YOUR_SERVER_IP:8444/mcp/sse` | Claude endpoint |
+| Web UI | `https://YOUR_SERVER_IP:7444` | Management dashboard |
+| Web API | `https://YOUR_SERVER_IP:8445` | REST API |
+| API Docs | `https://YOUR_SERVER_IP:8445/docs` | Swagger UI |
+| MCP SSE | `https://YOUR_SERVER_IP:8445/mcp/sse` | Claude endpoint |
 | PostgreSQL | `localhost:15432` | Database |
 
 ## Troubleshooting
@@ -160,8 +160,8 @@ Enable edit mode in Web UI > Security, then:
 docker compose ps
 
 # View logs
-docker compose logs nd_mcp_web_api
-docker compose logs nd_mcp_web_ui
+docker compose logs catc_mcp_web_api
+docker compose logs catc_mcp_web_ui
 
 # Restart
 docker compose down && docker compose up -d
@@ -188,7 +188,7 @@ curl -k -X POST https://catalyst-center.example.com/login \
 
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
+docker compose exec catc_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Full reset (WARNING: deletes all data!)
 docker compose down -v
@@ -208,7 +208,7 @@ docker compose down
 docker compose logs -f
 
 # Restart a service
-docker compose restart nd_mcp_web_ui
+docker compose restart catc_mcp_web_ui
 
 # Rebuild and restart
 docker compose up -d --build

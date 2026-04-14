@@ -33,7 +33,7 @@ For accessing the MCP server running on a remote host:
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only"
       ]
@@ -62,7 +62,7 @@ For Claude Desktop running on the same machine as Docker:
       "args": [
         "exec",
         "-i",
-        "nd_mcp_mcp_server",
+        "catc_mcp_mcp_server",
         "python",
         "src/main.py"
       ]
@@ -95,7 +95,7 @@ $env:NODE_TLS_REJECT_UNAUTHORIZED=0
 
 1. Download the server certificate:
    ```bash
-   openssl s_client -connect YOUR_SERVER_IP:8444 -showcerts </dev/null 2>/dev/null | \
+   openssl s_client -connect YOUR_SERVER_IP:8445 -showcerts </dev/null 2>/dev/null | \
      openssl x509 -outform PEM > catalyst-center-mcp.crt
    ```
 
@@ -140,7 +140,7 @@ or
 
 Write operations are disabled by default. To enable:
 
-1. Go to Web UI: `https://YOUR_SERVER_IP:7443`
+1. Go to Web UI: `https://YOUR_SERVER_IP:7444`
 2. Navigate to **Security** page
 3. Enable **Edit Mode**
 4. Optionally whitelist specific operations
@@ -177,7 +177,7 @@ docker compose up -d
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only",
         "--header",
@@ -199,7 +199,7 @@ docker compose up -d
 
 2. **Check server logs:**
    ```bash
-   docker compose logs -f nd_mcp_mcp_server
+   docker compose logs -f catc_mcp_mcp_server
    ```
 
 3. **Verify Claude Desktop config syntax:**
@@ -209,28 +209,28 @@ docker compose up -d
 
 4. **Test the SSE endpoint:**
    ```bash
-   curl -k https://YOUR_SERVER_IP:8444/mcp/sse
+   curl -k https://YOUR_SERVER_IP:8445/mcp/sse
    ```
 
 ### Permission Errors
 
 - Check edit mode setting in Web UI
 - Verify your user has appropriate role assignments
-- Review audit logs: `https://YOUR_SERVER_IP:7443/audit`
+- Review audit logs: `https://YOUR_SERVER_IP:7444/audit`
 
 ### Connection Errors
 
 1. **Test network connectivity:**
    ```bash
-   curl -k https://YOUR_SERVER_IP:8444/api/health
+   curl -k https://YOUR_SERVER_IP:8445/api/health
    ```
 
 2. **Check firewall rules:**
-   - Port 8444 must be accessible
+   - Port 8445 must be accessible
 
 3. **Verify SSL certificate:**
    ```bash
-   openssl s_client -connect YOUR_SERVER_IP:8444 -servername YOUR_SERVER_IP
+   openssl s_client -connect YOUR_SERVER_IP:8445 -servername YOUR_SERVER_IP
    ```
 
 ### SSL/Certificate Errors
@@ -246,16 +246,16 @@ If you see "self-signed certificate" or "unable to verify" errors:
 ### View Real-Time Logs
 
 ```bash
-docker compose logs -f nd_mcp_mcp_server
+docker compose logs -f catc_mcp_mcp_server
 ```
 
 ### Audit Log Access
 
 All MCP operations are logged. View them at:
-- Web UI: `https://YOUR_SERVER_IP:7443/audit`
+- Web UI: `https://YOUR_SERVER_IP:7444/audit`
 - Database:
   ```bash
-  docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp -c \
+  docker compose exec catc_mcp_postgres psql -U mcp_user -d catalyst_center_mcp -c \
     "SELECT * FROM audit_log ORDER BY timestamp DESC LIMIT 20;"
   ```
 

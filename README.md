@@ -70,15 +70,15 @@ docker compose up -d --build
 This will:
 - Generate self-signed SSL certificates automatically
 - Start PostgreSQL database (port 15432)
-- Start Web API with HTTPS (port 8444)
-- Start Web UI with HTTPS (port 7443)
+- Start Web API with HTTPS (port 8445)
+- Start Web UI with HTTPS (port 7444)
 - Start MCP Server for Claude integration
 
 ### 3. Initial Setup
 
 1. Open your browser and navigate to:
    ```
-   https://YOUR_SERVER_IP:7443
+   https://YOUR_SERVER_IP:7444
    ```
 
 2. Accept the self-signed certificate warning
@@ -112,7 +112,7 @@ Add to your Claude Desktop configuration:
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only"
       ]
@@ -135,7 +135,7 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
       "args": [
         "exec",
         "-i",
-        "nd_mcp_mcp_server",
+        "catc_mcp_mcp_server",
         "python",
         "src/main.py"
       ]
@@ -156,7 +156,7 @@ Restart Claude Desktop, and you'll see the Catalyst Center tools available!
                            |
            +---------------+---------------+
            |                               |
-      Port 7443                       Port 8444
+      Port 7444                       Port 8445
            |                               |
 +----------+----------+    +---------------+--------------+
 |       Web UI        |    |           Web API            |
@@ -180,10 +180,10 @@ Certificate Volume: /app/certs/ (auto-generated on first startup)
 
 | Service | Port | Protocol | Description |
 |---------|------|----------|-------------|
-| Web UI | 7443 | HTTPS | Management interface |
-| Web API | 8444 | HTTPS | REST API and MCP SSE endpoint |
+| Web UI | 7444 | HTTPS | Management interface |
+| Web API | 8445 | HTTPS | REST API and MCP SSE endpoint |
 | PostgreSQL | 15432 | TCP | Database (mapped from 5432) |
-| Internal HTTP | 7100 | HTTP | Internal proxy communication |
+| Internal HTTP | 7101 | HTTP | Internal proxy communication |
 
 ## Environment Variables
 
@@ -203,8 +203,8 @@ SESSION_SECRET_KEY=your-random-secret-key
 DOCKER_EXTERNAL_NETWORK=openshell-cluster-nemoclaw
 
 # Required by Web UI runtime proxy target
-# Docker Compose sets this to http://nd_mcp_web_api:7100 by default
-BACKEND_API_URL=http://nd_mcp_web_api:7100
+# Docker Compose sets this to http://catc_mcp_web_api:7101 by default
+BACKEND_API_URL=http://catc_mcp_web_api:7101
 
 # Optional: Catalyst Center defaults (can be configured via Web UI)
 CATALYST_CENTER_CLUSTER_URL=https://catalyst-center.example.com
@@ -287,7 +287,7 @@ docker compose logs -f
 ### Certificate Issues
 ```bash
 # View certificate details
-docker compose exec nd_mcp_web_api openssl x509 -in /app/certs/server.crt -text -noout
+docker compose exec catc_mcp_web_api openssl x509 -in /app/certs/server.crt -text -noout
 
 # Regenerate certificates
 docker volume rm catalyst-center-mcp-certs
@@ -297,7 +297,7 @@ docker compose up -d
 ### Database Issues
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
+docker compose exec catc_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Check tables
 \dt
@@ -309,10 +309,10 @@ SELECT * FROM audit_log ORDER BY timestamp DESC LIMIT 10;
 ### Network Connectivity
 ```bash
 # Test API endpoint
-curl -k https://localhost:8444/api/health
+curl -k https://localhost:8445/api/health
 
 # Test Web UI
-curl -k https://localhost:7443
+curl -k https://localhost:7444
 ```
 
 ## Development

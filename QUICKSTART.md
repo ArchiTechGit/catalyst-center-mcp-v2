@@ -48,7 +48,7 @@ Wait for all services to start (about 1-2 minutes on first run).
 
 ### Step 3: Access Web UI
 
-1. Open browser: `https://YOUR_SERVER_IP:7443`
+1. Open browser: `https://YOUR_SERVER_IP:7444`
 2. Accept the self-signed certificate warning
 3. Create admin account:
    - Username: `admin`
@@ -81,7 +81,7 @@ Add to your Claude Desktop config:
       "command": "npx",
       "args": [
         "mcp-remote@latest",
-        "https://YOUR_SERVER_IP:8444/mcp/sse",
+        "https://YOUR_SERVER_IP:8445/mcp/sse",
         "--transport",
         "sse-only"
       ]
@@ -96,10 +96,10 @@ Restart Claude Desktop and try: "List all fabrics in my Catalyst Center"
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Web UI | `https://YOUR_SERVER_IP:7443` | Management dashboard |
-| Web API | `https://YOUR_SERVER_IP:8444` | REST API |
-| API Docs | `https://YOUR_SERVER_IP:8444/docs` | Swagger documentation |
-| MCP SSE | `https://YOUR_SERVER_IP:8444/mcp/sse` | Claude Desktop endpoint |
+| Web UI | `https://YOUR_SERVER_IP:7444` | Management dashboard |
+| Web API | `https://YOUR_SERVER_IP:8445` | REST API |
+| API Docs | `https://YOUR_SERVER_IP:8445/docs` | Swagger documentation |
+| MCP SSE | `https://YOUR_SERVER_IP:8445/mcp/sse` | Claude Desktop endpoint |
 
 ## Common Commands
 
@@ -133,8 +133,8 @@ docker compose up -d --build
 docker compose ps
 
 # Check for errors
-docker compose logs nd_mcp_web_ui
-docker compose logs nd_mcp_web_api
+docker compose logs catc_mcp_web_ui
+docker compose logs catc_mcp_web_api
 ```
 
 ### Certificate issues
@@ -147,7 +147,7 @@ docker compose up -d
 ### Database issues
 ```bash
 # Connect to database
-docker compose exec nd_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
+docker compose exec catc_mcp_postgres psql -U mcp_user -d catalyst_center_mcp
 
 # Check tables
 \dt
