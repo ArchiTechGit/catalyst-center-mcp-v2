@@ -41,6 +41,22 @@ class Settings(BaseSettings):
         default=False,
         description="Verify SSL certificates for Catalyst Center connections"
     )
+    catalyst_center_auth_mode: str = Field(
+        default="basic",
+        description="Authentication mode for Catalyst Center token requests (basic or aes256)"
+    )
+    catalyst_center_encoded_auth: Optional[str] = Field(
+        default=None,
+        description="Optional base64-encoded username:password value for Catalyst Center Basic authentication"
+    )
+    catalyst_center_aes_key: Optional[str] = Field(
+        default=None,
+        description="Optional 256-bit AES key for Catalyst Center AES authentication"
+    )
+    catalyst_center_aes_encrypted_credentials: Optional[str] = Field(
+        default=None,
+        description="Optional pre-encrypted Base64 AES credential payload for Catalyst Center authentication"
+    )
 
     # Security Configuration
     edit_mode_enabled: bool = Field(
