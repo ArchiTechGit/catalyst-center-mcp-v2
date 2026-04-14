@@ -76,7 +76,7 @@ This tool acts as a bridge between Claude AI and your Cisco Catalyst Center infr
 
 1. **MCP Server** (Port: stdio)
    - Implements Model Context Protocol
-   - Loads 638 operations from Catalyst Center OpenAPI specs
+   - Loads 1296 operations from Catalyst Center Intent OpenAPI spec
    - Executes API calls to Catalyst Center clusters
    - Logs all operations to audit database
 

@@ -10,12 +10,8 @@ A comprehensive Model Context Protocol (MCP) server for Cisco Catalyst Center, e
 ## Features
 
 ### Core Capabilities
-- **Complete API Coverage**: Access to 638+ operations across 5 Catalyst Center APIs
-  - Manage API (146 endpoints): Fabrics, switches, VLANs, VRFs, networks, interfaces
-  - Analyze API: Telemetry, insights, anomalies, compliance
-  - Infrastructure API: System health, licensing, user management
-  - OneManage API: Device inventory, topology
-  - Orchestration API: Workflows and automation
+- **Complete API Coverage**: Access to 1296 operations from the Catalyst Center Intent API spec
+  - Intent API: Endpoint analytics, tasks, policy operations, device and network workflows
 
 - **Security First**:
   - HTTPS with self-signed certificates (auto-generated)

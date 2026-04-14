@@ -194,7 +194,7 @@ When a user connects via Claude Desktop:
 │                    MCP Tool Filtering                           │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  All Tools (638+)                                               │
+│  All Tools (1296)                                               │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │ intent_createAProfilingRule, intent_registerAnEndpoint, intent_deleteAnEndpoint, │   │
 │  │ intent_getTaskDetails, intent_getEndpointDetails, ...             │   │

@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS user_clusters (
 
 -- Tool profiles for controlling tool exposure to MCP clients
 -- Addresses MCP client tool limits (typically 40-128 tools) by filtering
--- the 638+ available operations down to a manageable, role-appropriate subset.
+-- the 1296 available operations down to a manageable, role-appropriate subset.
 CREATE TABLE IF NOT EXISTS tool_profiles (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL UNIQUE,
