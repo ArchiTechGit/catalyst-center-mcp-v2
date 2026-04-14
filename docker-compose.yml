@@ -1,8 +1,8 @@
 services:
   # PostgreSQL database for credentials and audit logs
-  nd_mcp_postgres:
+  catc_mcp_postgres:
     image: postgres:15-alpine
-    container_name: nd_mcp_postgres
+    container_name: catc_mcp_postgres
     environment:
       POSTGRES_DB: catalyst_center_mcp
       POSTGRES_USER: mcp_user
@@ -22,9 +22,9 @@ services:
     restart: unless-stopped
 
   # Certificate initialization service (generates self-signed certs on first startup)
-  nd_mcp_cert_init:
+  catc_mcp_cert_init:
     image: alpine:latest
-    container_name: nd_mcp_cert_init
+    container_name: catc_mcp_cert_init
     command: sh /scripts/generate-certs.sh
     volumes:
       - certs:/app/certs
@@ -40,19 +40,19 @@ services:
 
   # Catalyst Center MCP Server
   # Connected to external bridge network for container-to-container communication
-  nd_mcp_mcp_server:
+  catc_mcp_mcp_server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nd_mcp_mcp_server
+    container_name: catc_mcp_mcp_server
     depends_on:
-      nd_mcp_postgres:
+      catc_mcp_postgres:
         condition: service_healthy
     networks:
       - catalyst-center-mcp-network
     environment:
       # Database (use service name on Docker network)
-      DATABASE_URL: postgresql://mcp_user:changeme@nd_mcp_postgres:5432/catalyst_center_mcp
+      DATABASE_URL: postgresql://mcp_user:changeme@catc_mcp_postgres:5432/catalyst_center_mcp
 
       # Catalyst Center Connection
       CATALYST_CENTER_CLUSTER_URL: ${CATALYST_CENTER_CLUSTER_URL:-https://192.168.70.101}
@@ -85,15 +85,15 @@ services:
 
   # FastAPI Web API Backend (HTTPS)
   # Connected to external bridge network for service discovery via DNS
-  nd_mcp_web_api:
+  catc_mcp_web_api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nd_mcp_web_api
+    container_name: catc_mcp_web_api
     depends_on:
-      nd_mcp_postgres:
+      catc_mcp_postgres:
         condition: service_healthy
-      nd_mcp_cert_init:
+      catc_mcp_cert_init:
         condition: service_completed_successfully
     networks:
       - catalyst-center-mcp-network
@@ -102,7 +102,7 @@ services:
       - "${INTERNAL_HTTP_PORT:-7100}:${INTERNAL_HTTP_PORT:-7100}"
     environment:
       # Database (use service name on Docker network)
-      DATABASE_URL: postgresql://mcp_user:changeme@nd_mcp_postgres:5432/catalyst_center_mcp
+      DATABASE_URL: postgresql://mcp_user:changeme@catc_mcp_postgres:5432/catalyst_center_mcp
 
       # Security
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-lGczu6Yzd2IrRrcJF3cOS8BsAOO6R-1761BRDusbCuM=}
@@ -134,21 +134,21 @@ services:
       start_period: 30s
 
   # Next.js Web UI (HTTPS)
-  nd_mcp_web_ui:
+  catc_mcp_web_ui:
     build:
       context: ./web-ui
       dockerfile: Dockerfile
-    container_name: nd_mcp_web_ui
+    container_name: catc_mcp_web_ui
     depends_on:
-      - nd_mcp_web_api
-      - nd_mcp_cert_init
+      - catc_mcp_web_api
+      - catc_mcp_cert_init
     networks:
       - catalyst-center-mcp-network
     ports:
       - "${WEB_UI_PORT:-7443}:${WEB_UI_PORT:-7443}"
     environment:
       # Backend API URL for server-side proxying over Docker network
-      - BACKEND_API_URL=http://nd_mcp_web_api:7100
+      - BACKEND_API_URL=http://catc_mcp_web_api:7100
       # SSL/TLS Configuration
       - SSL_ENABLED=true
       - SSL_CERTFILE=/app/certs/server.crt
