@@ -6,7 +6,7 @@ This document describes the five critical fixes implemented to make the platform
 
 ## Phase 1: Operation Name Mismatch Fix
 
-**Problem:** Tool names in MCP use `{api_name}_{operation_id}` format (e.g., `manage_createVlan`) but the operations API returned just `operation_id` (e.g., `createVlan`). This meant role-based tool filtering never matched for manually-created roles.
+**Problem:** Tool names in MCP use `{api_name}_{operation_id}` format (e.g., `intent_createAProfilingRule`) but the operations API returned just `operation_id` (e.g., `createVlan`). This meant role-based tool filtering never matched for manually-created roles.
 
 **Fix:**
 - `src/services/role_service.py`: `get_all_available_operations()` and `get_operations_by_api()` now return names with the `{api_name}_` prefix
@@ -15,7 +15,7 @@ This document describes the five critical fixes implemented to make the platform
 
 ## Phase 2: Tool Profiles
 
-**Problem:** 638+ tools exceed MCP client limits (typically 40-128). Even superusers got everything.
+**Problem:** Large tool catalogs can exceed MCP client limits (typically 40-128). Even superusers got everything.
 
 **Solution:** Tool profiles are named subsets of tools assigned to users.
 
@@ -35,7 +35,7 @@ This document describes the five critical fixes implemented to make the platform
 ```
 
 ### Seed Profiles
-- **Fabric Operations** (30 tools) - VLAN, VRF, BD, EPG management
+- **Endpoint Operations** (30 tools) - Endpoint analytics and endpoint-focused workflows
 - **Monitoring & Health** (25 tools) - Read-only monitoring
 - **Troubleshooting** (25 tools) - Network analysis
 - **Full Access** (max_tools=0) - No filtering, backward compatible

@@ -21,7 +21,7 @@ The **Catalyst Center MCP Server** is a Model Context Protocol (MCP) server that
 
 This tool acts as a bridge between Claude AI and your Cisco Catalyst Center infrastructure, enabling:
 
-- **AI-Powered Network Operations**: Use natural language to query and manage your network fabric
+- **AI-Powered Network Operations**: Use natural language to query and manage your Catalyst Center environment
 - **Centralized Management**: Single interface to manage multiple Catalyst Center clusters
 - **Audit & Compliance**: Complete audit trail of all operations with client IP tracking
 - **Security Controls**: Granular permission management and read-only mode
@@ -133,12 +133,8 @@ This tool acts as a bridge between Claude AI and your Cisco Catalyst Center infr
 - Response time metrics
 - Auto-refresh every 30 seconds
 
-### 5. 638 Operations Available
-Supports all Catalyst Center DCNM APIs including:
-- **Manage API**: Fabrics, switches, VLANs, VRFs, networks, interfaces
-- **Analyze API**: Telemetry, insights, anomalies, compliance
-- **Infra API**: System health, licensing, user management
-- **OneManage API**: Device inventory, topology
+### 5. Intent API Operations Available
+Supports the Catalyst Center Intent API toolset generated from `intent_api_3_1_3.json`, including endpoint analytics, task tracking, policy, and operational workflows.
 
 ---
 
@@ -181,7 +177,7 @@ Supports all Catalyst Center DCNM APIs including:
 
 5. **Use with Claude**:
    - Claude AI can now query your Catalyst Center
-   - Example: "Show me all fabrics in my production cluster"
+   - Example: "Show me all endpoints in my production cluster"
    - MCP Server will execute the API call and return results
 
 ---
@@ -221,9 +217,9 @@ Supports all Catalyst Center DCNM APIs including:
 - Empty list = All operations allowed (when edit mode ON)
 - Populated list = Only listed operations allowed
 - Example operations:
-  - `manage_createVlan`
-  - `manage_deleteNetwork`
-  - `analyze_getInsights`
+  - `intent_createAProfilingRule`
+   - `intent_deleteAnEndpoint`
+  - `intent_getTaskDetails`
 
 **Workflow**:
 1. Enable/disable edit mode using toggle
@@ -399,15 +395,15 @@ Result: All operations allowed
 **Scenario 3: Limited Write Access**
 ```
 Edit Mode: ON
-Allowed Operations: [manage_createVlan, manage_deleteVlan]
-Result: Only VLAN operations allowed
+Allowed Operations: [intent_createAProfilingRule, intent_deleteAnEndpoint]
+Result: Only selected write operations allowed
 ```
 
 **Scenario 4: Specific Read Access**
 ```
 Edit Mode: OFF
-Allowed Operations: [analyze_getInsights]
-Result: Only insights analysis allowed
+Allowed Operations: [intent_getTaskDetails]
+Result: Only the specified read operation is allowed
 ```
 
 ---
@@ -426,10 +422,10 @@ Result: Only insights analysis allowed
 | Cluster Endpoint | IP/URL of cluster | `https://catalyst-center.example.com` |
 | Client IP | Source IP of request | `10.0.1.50` |
 | User ID | (Future: username) | `null` |
-| Operation ID | OpenAPI operation | `manage_createVlan` |
+| Operation ID | OpenAPI operation | `intent_createAProfilingRule` |
 | HTTP Method | Request method | `POST` |
-| Path | API endpoint path | `/api/dcnm/vlans` |
-| Request Body | JSON payload | `{"vlanId": "100"}` |
+| Path | API endpoint path | `/dna/intent/api/v1/endpoint-analytics/profiling-rules` |
+| Request Body | JSON payload | `{"ruleName": "baseline-endpoint-profile"}` |
 | Response Status | HTTP status code | `201` |
 | Response Body | API response | `{"success": true}` |
 | Error Message | If failed | `Connection timeout` |
@@ -497,8 +493,8 @@ Find all operations from IP 10.0.1.50:
 
 **1. Security Investigation**
 ```
-Scenario: Unauthorized VLAN deletion
-1. Filter audit logs for deleteVlan operations
+Scenario: Unauthorized endpoint deletion
+1. Filter audit logs for `intent_deleteAnEndpoint` operations
 2. Check Client IP column
 3. Identify IP: 10.0.2.99 (not from known subnet)
 4. Block IP at firewall

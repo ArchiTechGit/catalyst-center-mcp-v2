@@ -113,18 +113,18 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
 
 1. Restart Claude Desktop
 2. Look for MCP icon showing "catalyst-center" connected
-3. Try: "List all fabrics in my Catalyst Center"
+3. Try: "List all endpoints in my Catalyst Center"
 
 ## Example Queries
 
 ### Read-Only Operations (Always Allowed)
 
 ```
-"Show me all fabrics in my Catalyst Center"
+"Show me all endpoints in my Catalyst Center"
 
 "List recent anomalies detected in the network"
 
-"What's the status of fabric connections?"
+"What's the status of endpoint analytics connections?"
 
 "Show inventory of all devices"
 ```
@@ -134,11 +134,11 @@ Replace `YOUR_SERVER_IP` with your server's IP address.
 Enable edit mode in Web UI > Security, then:
 
 ```
-"Create a new fabric named 'Production-DC1'"
+"Create a new endpoint registration for MAC '00:11:22:33:44:55'"
 
-"Update the description of fabric 'Test-Fabric'"
+"Update endpoint details for endpoint ID '12345'"
 
-"Delete the fabric 'Old-Test'"
+"Delete endpoint with ID '12345'"
 ```
 
 ## Access Points

@@ -6,7 +6,7 @@ Model Context Protocol (MCP) is changing how AI assistants interact with enterpr
 
 **Who's guarding the AI's access to your network?**
 
-When an MCP server connects to Cisco Catalyst Center, it gains access to fabric management, device configurations, VLAN provisioning, and network topology. One poorly secured MCP endpoint could become an attack vector for your entire data center infrastructure.
+When an MCP server connects to Cisco Catalyst Center, it gains access to endpoint analytics, device configurations, policy operations, and network telemetry. One poorly secured MCP endpoint could become an attack vector for your entire data center infrastructure.
 
 This guide documents the security architecture we built for the Catalyst Center MCP Server, a reference implementation for securing AI-to-infrastructure communication.
 
@@ -24,7 +24,7 @@ Traditional API security focuses on human users with predictable behavior. MCP s
 |   (AI Agent)     |     |   (Bridge)       |     |  (Infrastructure) |
 +------------------+     +------------------+     +-------------------+
         |                        |                         |
-   Prompt Injection?      Credential Theft?         Fabric Changes?
+  Prompt Injection?      Credential Theft?         Unauthorized API Changes?
    Unauthorized Ops?      Session Hijacking?        Config Drift?
 ```
 
@@ -162,10 +162,10 @@ class SecurityManager:
 |  allowed through the MCP interface.      |
 |                                          |
 |  Whitelisted Operations:                 |
-|  [ ] fabric-create                       |
-|  [ ] fabric-update                       |
-|  [x] fabric-deploy (approved)            |
-|  [ ] fabric-delete                       |
+|  [ ] intent_registerAnEndpoint                       |
+|  [ ] intent_getEndpointDetails                       |
+|  [x] intent_createAProfilingRule (approved)            |
+|  [ ] intent_deleteAnEndpoint                       |
 |                                          |
 +------------------------------------------+
 ```
@@ -309,7 +309,7 @@ CREATE TABLE audit_log (
 +------------------------------------------------------------------+
 | Timestamp           | User    | Operation        | Status | Time |
 +------------------------------------------------------------------+
-| 2025-12-04 20:15:32 | admin   | fabric-list      | 200    | 45ms |
+| 2025-12-04 20:15:32 | admin   | intent_queryTheEndpoints      | 200    | 45ms |
 | 2025-12-04 20:14:18 | admin   | cluster-test     | 200    | 890ms|
 | 2025-12-04 20:13:05 | system  | health-check     | 200    | 12ms |
 +------------------------------------------------------------------+

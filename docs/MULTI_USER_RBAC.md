@@ -196,17 +196,17 @@ When a user connects via Claude Desktop:
 │                                                                 │
 │  All Tools (638+)                                               │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │ manage_createVlan, manage_updateVlan, manage_deleteVlan, │   │
-│  │ analyze_getInsights, infra_deployPolicy, ...             │   │
+│  │ intent_createAProfilingRule, intent_registerAnEndpoint, intent_deleteAnEndpoint, │   │
+│  │ intent_getTaskDetails, intent_getEndpointDetails, ...             │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                  │
 │                              │ User: network_operator           │
 │                              │ Roles: [Network Operator]        │
-│                              │ Allowed: [manage_*, analyze_*]   │
+│                              │ Allowed: [intent_*, intent_*]   │
 │                              ▼                                  │
 │  Filtered Tools                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │ manage_createVlan, manage_updateVlan, analyze_getInsights│   │
+│  │ intent_createAProfilingRule, intent_registerAnEndpoint, intent_getTaskDetails│   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -245,14 +245,14 @@ The system enforces cluster-level access control in addition to operation-level 
 │                                                                 │
 │  User attempts to execute MCP tool                              │
 │  ┌─────────────────────────────────────────────────────────┐   │
-│  │ tools/call { name: "manage_getVlans",                    │   │
+│  │ tools/call { name: "intent_queryTheEndpoints",                    │   │
 │  │              arguments: { cluster: "prod-catalyst" } }      │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                  │
 │                              ▼                                  │
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │              Step 1: Operation Permission Check          │   │
-│  │  Does user have "manage_getVlans" in their roles?        │   │
+│  │  Does user have "intent_queryTheEndpoints" in their roles?        │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                  │
 │                              ▼                                  │

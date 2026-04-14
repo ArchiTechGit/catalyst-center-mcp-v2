@@ -8,7 +8,7 @@ You now have a **complete, working system** with some parts fully connected and 
 
 ```
 ┌─────────────────┐
-│  Claude Desktop │ ◄─── You type: "List all fabrics"
+│  Claude Desktop │ ◄─── You type: "List all endpoints"
 └────────┬────────┘
          │ MCP Protocol (stdio)
          ▼
@@ -53,22 +53,22 @@ You now have a **complete, working system** with some parts fully connected and 
 **Example Flow:**
 
 ```
-You in Claude: "List all fabrics"
+You in Claude: "List all endpoints"
     ↓
-MCP Server executes: manage_listFabrics
+MCP Server executes: intent_queryTheEndpoints
     ↓
 Auth Middleware: Connects to Catalyst Center
     ↓
-API Call: GET /api/v1/manage/fabrics
+API Call: GET /dna/intent/api/v1/endpoint-analytics/endpoints
     ↓
-Response: [{"fabricName": "Lab_Fabric", ...}]
+Response: [{"epId": "1", "mac": "00:11:22:33:44:55", ...}]
     ↓
 ✅ Audit Logger AUTOMATICALLY writes to database:
     INSERT INTO audit_log (
       cluster_id: 1,
-      operation_id: 'manage_listFabrics',
+      operation_id: 'intent_queryTheEndpoints',
       http_method: 'GET',
-      path: '/api/v1/manage/fabrics',
+      path: '/dna/intent/api/v1/endpoint-analytics/endpoints',
       request_body: null,
       response_status: 200,
       response_body: {full response},
@@ -85,7 +85,7 @@ You'll see:
 ┌────┬──────────────────────┬────────┬───────────────────────┬────────┬──────────────────┐
 │ ID │ Operation            │ Method │ Path                  │ Status │ Timestamp        │
 ├────┼──────────────────────┼────────┼───────────────────────┼────────┼──────────────────┤
-│ 1  │ manage_listFabrics   │ GET    │ /api/v1/manage/fab... │  200   │ 2025-11-23 14:30 │
+│ 1  │ intent_queryTheEndpoints   │ GET    │ /dna/intent/api/v1/endpoint-analytics/endpoints │  200   │ 2025-11-23 14:30 │
 └────┴──────────────────────┴────────┴───────────────────────┴────────┴──────────────────┘
 
 ✅ This is REAL data from your actual MCP usage!
@@ -120,9 +120,9 @@ class SecurityMiddleware:
 **Example:**
 
 ```
-You: "Create a new VLAN with ID 100"
+You: "Create a profiling rule named baseline-endpoint-profile"
     ↓
-Tool called: manage_createVlan (POST method)
+Tool called: intent_createAProfilingRule (POST method)
     ↓
 Security Middleware checks:
 - Method: POST ❌ (not GET)
@@ -133,7 +133,7 @@ Security Middleware checks:
 You see: "Error: Edit mode is disabled. Only read operations are allowed."
     ↓
 ✅ Audit log records the attempt:
-    operation_id: 'manage_createVlan'
+    operation_id: 'intent_createAProfilingRule'
     response_status: 403
     error_message: 'Operation requires edit mode'
 ```
@@ -298,7 +298,7 @@ docker-compose restart catc_mcp_mcp_server
 **Step 3: Use Claude Desktop**
 
 ```
-You: "List all fabrics"
+You: "List all endpoints"
 
 Claude uses MCP:
     ↓
@@ -309,7 +309,7 @@ MCP Server:
   - Makes API call ✓
   - Logs to audit_log ✓
     ↓
-You get response: "Here are the fabrics: ..."
+You get response: "Here are the endpoints: ..."
 ```
 
 **Step 4: Check audit logs**
@@ -333,7 +333,7 @@ You get response: "Here are the fabrics: ..."
    docker-compose restart catc_mcp_mcp_server
 
 3. Now in Claude:
-   You: "Create a VLAN with ID 100"
+    You: "Create a profiling rule named baseline-endpoint-profile"
    ✅ Works! (Previously blocked)
 
 4. Check audit log:
@@ -358,17 +358,17 @@ You get response: "Here are the fabrics: ..."
 1. Open Web UI audit page: http://localhost:7001/audit
 
 2. Use Claude Desktop normally:
-   - "List fabrics"
-   - "Show switches in Lab_Fabric"
-   - "Get interface details for switch spine-01"
+    - "List endpoints"
+    - "Show endpoint count"
+    - "Get details for endpoint ID 123"
 
 3. Refresh audit page:
    ┌────┬─────────────────────┬────────┬────────┬──────────────┐
    │ ID │ Operation           │ Method │ Status │ Timestamp    │
    ├────┼─────────────────────┼────────┼────────┼──────────────┤
-   │ 45 │ manage_getFabric... │ GET    │  200   │ 14:35:12     │
-   │ 44 │ manage_listFabric...│ GET    │  200   │ 14:35:08     │
-   │ 43 │ manage_listFabrics  │ GET    │  200   │ 14:35:01     │
+    │ 45 │ intent_getEndpointDetails... │ GET    │  200   │ 14:35:12     │
+    │ 44 │ intent_fetchTheCountOfEndpoints...│ GET    │  200   │ 14:35:08     │
+   │ 43 │ intent_queryTheEndpoints  │ GET    │  200   │ 14:35:01     │
    └────┴─────────────────────┴────────┴────────┴──────────────┘
 
 4. Filter by status = 4XX or 5XX to see errors only
@@ -424,9 +424,9 @@ Expected:
 # Or if you've used it:
 [{
   "id": 1,
-  "operation_id": "manage_listFabrics",
+  "operation_id": "intent_queryTheEndpoints",
   "http_method": "GET",
-  "path": "/api/v1/manage/fabrics",
+  "path": "/dna/intent/api/v1/endpoint-analytics/endpoints",
   "response_status": 200,
   "timestamp": "2025-11-23T14:30:15.123456"
 }]
@@ -506,7 +506,7 @@ GROUP BY user_id;
 3. **Read-Only Mode** - Write operations blocked by default
 4. **Web UI** - Full CRUD for clusters, view audit logs, see stats
 5. **FastAPI Backend** - All REST endpoints working
-6. **Multi-API Support** - 638 operations across 4 Catalyst Center APIs
+6. **Single Intent API Toolset** - Operations generated from `intent_api_3_1_3.json`
 
 ### 🔄 What Needs Quick Integration (< 30 min of coding)
 

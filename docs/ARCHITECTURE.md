@@ -227,8 +227,8 @@ The Catalyst Center MCP Server is built with a modular, layered architecture des
 # OpenAPI Operation
 {
   "get": {
-    "operationId": "getFabrics",
-    "summary": "Get list of fabrics",
+    "operationId": "queryTheEndpoints",
+    "summary": "Query The Endpoints",
     "parameters": [
       {"name": "limit", "in": "query", "schema": {"type": "integer"}}
     ],
@@ -240,8 +240,8 @@ The Catalyst Center MCP Server is built with a modular, layered architecture des
 
 # Generated MCP Tool
 Tool(
-  name="manage_getFabrics",
-  description="GET /api/v1/fabrics - Get list of fabrics",
+  name="intent_queryTheEndpoints",
+  description="GET /dna/intent/api/v1/endpoint-analytics/endpoints - Query The Endpoints",
   inputSchema={
     "type": "object",
     "properties": {

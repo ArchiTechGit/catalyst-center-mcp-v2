@@ -117,7 +117,7 @@ After restarting Claude Desktop:
 Try asking Claude:
 
 ```
-"List all fabrics in my Catalyst Center"
+"List all endpoints in my Catalyst Center"
 ```
 
 or
@@ -130,7 +130,7 @@ or
 
 ### Read Operations (Always Available)
 
-- Get fabrics, templates, policies
+- Get endpoints, tasks, and operational status
 - List anomalies and advisories
 - Query inventory and topology
 - View configurations and status
@@ -146,7 +146,7 @@ Write operations are disabled by default. To enable:
 4. Optionally whitelist specific operations
 
 Once enabled, you can:
-- Create/update/delete fabrics
+- Create/update/delete supported Intent resources
 - Manage templates and policies
 - Configure devices
 - Deploy configurations
@@ -264,15 +264,15 @@ All MCP operations are logged. View them at:
 ### Read-Only Examples
 
 ```
-"Show me all fabrics configured in Catalyst Center"
+"Show me all endpoints configured in Catalyst Center"
 
 "What anomalies have been detected in the last 24 hours?"
 
 "List all devices in the inventory"
 
-"Get the configuration of fabric 'Production-DC1'"
+"Get endpoint analytics details for 'Production-DC1'"
 
-"Show me the topology of fabric 'Test-Fabric'"
+"Show me endpoint analytics details for endpoint ID '12345'"
 
 "What is the health status of my clusters?"
 ```
@@ -280,17 +280,17 @@ All MCP operations are logged. View them at:
 ### Write Mode Examples (After Enabling)
 
 ```
-"Create a new fabric named 'Development-Fabric'"
+"Create a new endpoint registration for MAC '00:11:22:33:44:55'"
 
-"Update the description of fabric 'Test-Fabric' to 'QA Environment'"
+"Update endpoint details for endpoint ID '12345'"
 
-"Deploy the template 'Base-Config' to fabric 'Production-DC1'"
+"Create a profiling rule named 'baseline-endpoint-profile'"
 ```
 
 ## Best Practices
 
 1. **Start Read-Only:** Test queries before enabling write mode
-2. **Use Specific Queries:** Include fabric names and device IDs
+2. **Use Specific Queries:** Include endpoint IDs, MAC addresses, and device IDs
 3. **Monitor Logs:** Keep `docker compose logs -f` running during testing
 4. **Review Audit:** Check audit logs after operations
 5. **Limit Access:** Use API tokens in shared environments

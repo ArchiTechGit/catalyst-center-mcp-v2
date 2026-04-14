@@ -97,7 +97,7 @@ Configure operations that should always be read-only, even when edit mode is ena
 3. Operations appear as blue tags
 4. Click the × on any tag to remove it
 
-**Example use case:** Force operations like `get-sites`, `list-fabrics` to always be read-only.
+**Example use case:** Force operations like `intent_queryTheEndpoints`, `intent_fetchTheCountOfEndpoints` to always be read-only.
 
 #### Blocked Operations
 
@@ -108,7 +108,7 @@ Configure operations that are completely blocked:
 3. Operations appear as red tags
 4. Click the × on any tag to remove it
 
-**Example use case:** Block dangerous operations like `delete-site`, `remove-tenant`.
+**Example use case:** Block dangerous operations like `intent_deleteAnEndpoint`.
 
 #### Configuration Management
 

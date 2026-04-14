@@ -1,224 +1,59 @@
 # Catalyst Center API Path Reference
 
-## API Base Paths
+## Scope
+This project uses a single OpenAPI source:
+- `openapi_specs/intent_api_3_1_3.json`
 
-### Manage API
-**Base Path**: `/api/v1/manage`
-**Server URL**: `https://{cluster}/api/v1/manage`
+All MCP tools are generated from this spec and exposed with the `intent_` prefix.
 
-**Example Endpoints**:
-- List Fabrics: `GET /api/v1/manage/fabrics`
-- Get Fabric: `GET /api/v1/manage/fabrics/{fabricId}`
-- List Anomalies: `GET /api/v1/manage/anomalyRules/complianceRules`
+## Base Paths
+- Intent operations: `/dna/intent/api/v1/*`
+- Token endpoint: `/dna/system/api/v1/auth/token`
 
-### Analyze API (Phase 2)
-**Base Path**: `/api/v1/analyze`
-**Server URL**: `https://{cluster}/api/v1/analyze`
+The OpenAPI `servers` entry in `intent_api_3_1_3.json` is `/`, so each path in `paths` is already absolute (for example, `/dna/intent/api/v1/network-device`).
 
-### Infrastructure API (Phase 2)
-**Base Path**: `/api/v1/infra`
-**Server URL**: `https://{cluster}/api/v1/infra`
+## Runtime URL Construction
+1. `src/core/api_loader.py` loads operation paths directly from the spec.
+2. `src/middleware/auth.py` forwards those paths to the API client.
+3. `src/services/catalyst_api.py` joins the cluster base URL with the path.
 
-### OneManage API (Phase 2)
-**Base Path**: `/api/v1/one-manage`
-**Server URL**: `https://{cluster}/api/v1/one-manage`
+Example:
+- Base URL: `https://catalyst-center.example.com`
+- Path: `/dna/intent/api/v1/endpoint-analytics/endpoints`
+- Final URL: `https://catalyst-center.example.com/dna/intent/api/v1/endpoint-analytics/endpoints`
 
-### Orchestrator API (Phase 2)
-**Base Path**: TBD
-**Server URL**: TBD
+## Authentication Flow
+1. Request token via `POST /dna/system/api/v1/auth/token`.
+2. Use returned token in `X-Auth-Token` for subsequent calls.
+3. On `401`, client re-authenticates and retries.
 
-## OpenAPI Specification Structure
+Optional AES auth mode is supported by configuration in `src/config/settings.py`.
 
-### How Paths are Defined
+## Valid Tool Naming
+Tool name format:
+- `intent_<operationId>`
 
-In the OpenAPI spec (`intent_api_3_1_3.json`):
+Examples from current generated tool descriptions:
+- `intent_queryTheEndpoints`
+- `intent_getTaskDetails`
+- `intent_registerAnEndpoint`
+- `intent_getEndpointDetails`
+- `intent_createAProfilingRule`
 
-```json
-{
-  "openapi": "3.0.3",
-  "servers": [
-    {
-      "url": "https://{cluster}/api/v1/manage",
-      "variables": {
-        "cluster": {
-          "default": "example.com"
-        }
-      }
-    }
-  ],
-  "paths": {
-    "/fabrics": {
-      "get": {
-        "operationId": "listFabrics",
-        ...
-      }
-    }
-  }
-}
-```
+## Common Troubleshooting
+### 404 errors
+- Verify the request path begins with `/dna/intent/api/v1/`.
+- Verify the operation exists in `openapi_specs/intent_api_3_1_3.json`.
 
-**Key Points**:
-- The `servers[0].url` contains the full base path: `https://{cluster}/api/v1/manage`
-- The `paths` object contains relative paths like `/fabrics`
-- Full URL is: `servers[0].url + paths.key` = `https://{cluster}/api/v1/manage/fabrics`
+### 401 errors
+- Verify token endpoint connectivity: `POST /dna/system/api/v1/auth/token`.
+- Check credentials and auth mode configuration (`basic` vs `aes256`).
 
-## Implementation in MCP Server
-
-### Path Construction Flow
-
-1. **API Loader** (`src/core/api_loader.py`):
-   - Reads OpenAPI spec
-   - Extracts paths from `paths` object (e.g., `/fabrics`)
-   - Does NOT include the base path from `servers[0].url`
-
-2. **MCP Server** (`src/core/mcp_server.py`):
-   - Gets operation with path `/fabrics`
-   - Passes it to AuthMiddleware
-
-3. **Auth Middleware** (`src/middleware/auth.py`):
-   - **CRITICAL**: Prepends `/api/v1/manage` to the path
-   - Code:
-     ```python
-     if not path.startswith("/api/"):
-         path = f"/api/v1/manage{path}"
-     ```
-   - Final path: `/api/v1/manage/fabrics`
-
-4. **Catalyst Center API Client** (`src/services/catalyst_api.py`):
-   - Receives full path: `/api/v1/manage/fabrics`
-   - Joins with base_url: `https://catalyst-center.example.com`
-   - Final URL: `https://catalyst-center.example.com/api/v1/manage/fabrics`
-
-## Authentication Endpoints
-
-### Login
-**Endpoint**: `POST /login`
-**Full URL**: `https://{cluster}/login`
-
-**Note**: Login endpoint is NOT under `/api/v1/manage`. It's a top-level endpoint.
-
-**Request Body**:
-```json
-{
-  "username": "admin",
-  "password": "password"
-}
-```
-
-**Response**:
-- Sets session cookies
-- May return token in response body
-
-## Common Issues and Solutions
-
-### Issue: 404 Not Found
-
-**Symptom**: API returns 404 when calling endpoints
-
-**Possible Causes**:
-1. Missing base path (`/api/v1/manage`)
-2. Wrong API version
-3. Service not running
-4. Incorrect cluster URL
-
-**Debugging Steps**:
-```bash
-# Check what URL is being called
-docker-compose logs mcp-server | grep "API request"
-
-# Test endpoint manually
-curl -k https://catalyst-center.example.com/api/v1/manage/fabrics
-
-# Verify cluster is accessible
-curl -k https://catalyst-center.example.com
-```
-
-### Issue: 401 Unauthorized
-
-**Symptom**: API returns 401
-
-**Possible Causes**:
-1. Authentication failed
-2. Session expired
-3. Invalid credentials
-
-**Solution**: Check authentication in AuthMiddleware
-
-### Issue: Wrong Base Path
-
-**Symptom**: Calls going to wrong API (e.g., Analyze instead of Manage)
-
-**Solution**: Verify the base path logic in `src/middleware/auth.py`
-
-## Testing API Paths
-
-### Manual Testing
-
-```bash
-# 1. Get authentication token
-curl -k -X POST https://catalyst-center.example.com/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"Davinci!!02"}' \
-  -c cookies.txt
-
-# 2. Test Manage API endpoint
-curl -k -X GET https://catalyst-center.example.com/api/v1/manage/fabrics \
-  -b cookies.txt
-
-# 3. Test with specific fabric
-curl -k -X GET https://catalyst-center.example.com/api/v1/manage/fabrics/{fabricId} \
-  -b cookies.txt
-```
-
-### Automated Testing
-
-See `src/services/catalyst_api.py` for the `CatalystCenterAPIClient` class that handles:
-- Authentication with cookies
-- Automatic retry on 401
-- Session management
-- Path construction
-
-## Multi-API Support (Phase 2)
-
-When adding support for multiple APIs, the path construction logic needs to be updated:
-
-### Current (Phase 1 - Manage API Only):
-```python
-# In src/middleware/auth.py
-if not path.startswith("/api/"):
-    path = f"/api/v1/manage{path}"
-```
-
-### Future (Phase 2 - Multi-API):
-```python
-# In src/middleware/auth.py
-async def execute_request(
-    self,
-    method: str,
-    path: str,
-    api_name: str = "manage",  # New parameter
-    ...
-):
-    # Map API names to base paths
-    api_base_paths = {
-        "manage": "/api/v1/manage",
-        "analyze": "/api/v1/analyze",
-        "infra": "/api/v1/infra",
-        "one-manage": "/api/v1/one-manage",
-    }
-
-    if not path.startswith("/api/"):
-        base_path = api_base_paths.get(api_name, "/api/v1/manage")
-        path = f"{base_path}{path}"
-```
+### Tool mismatch errors
+- Ensure role/allow-list entries use exact tool names from the generated `intent_*` set.
 
 ## References
-
-- Catalyst Center API Documentation: https://developer.cisco.com/docs/catalyst-center/
-- OpenAPI 3.0 Specification: https://swagger.io/specification/
-- Catalyst Center Manage API OpenAPI: `openapi_specs/intent_api_3_1_3.json`
-
----
-
-**Last Updated**: November 23, 2025
-**Status**: Active documentation for Phase 1 implementation
+- `openapi_specs/intent_api_3_1_3.json`
+- `src/services/catalyst_api.py`
+- `src/middleware/auth.py`
+- `src/config/migrations/008_seed_tool_descriptions.sql`

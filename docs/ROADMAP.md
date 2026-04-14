@@ -8,13 +8,13 @@ This roadmap outlines the development plan for the Catalyst Center MCP Server fr
 
 **Timeline**: Weeks 1-2
 **Status**: In Progress
-**Goal**: Working prototype with Manage API
+**Goal**: Working prototype with Intent API
 
 ### Deliverables
 
 - [x] Project structure and configuration
 - [x] Core MCP server implementation
-- [x] Manage API integration (146 endpoints)
+- [x] Intent API integration (146 endpoints)
 - [x] Basic authentication (Basic Auth + cookies)
 - [x] Security middleware (environment variable control)
 - [x] PostgreSQL database with encrypted credentials
@@ -30,45 +30,44 @@ This roadmap outlines the development plan for the Catalyst Center MCP Server fr
 - All operations logged to audit table
 - Docker deployment works on fresh system
 
-## Phase 2: Multi-API Support
+## Phase 2: Intent API Expansion
 
 **Timeline**: Week 3
 **Status**: Planned
-**Goal**: Complete API coverage for all Catalyst Center services
+**Goal**: Expand and harden single-spec Intent API coverage
 
 ### Deliverables
 
-- [ ] Analyze API integration (198 endpoints)
-- [ ] Infrastructure API integration (136 endpoints)
-- [ ] OneManage API integration (14 endpoints)
-- [ ] Orchestrator API integration (after fixing parse issues)
-- [ ] Lazy loading for API sections
-- [ ] Health monitoring for each API
-- [ ] API status dashboard (CLI)
-- [ ] Updated documentation for all APIs
+- [ ] Refresh tool descriptions from latest `intent_api_3_1_3.json`
+- [ ] Validate operation parameter schemas against live cluster behavior
+- [ ] Expand guidance coverage for high-use operation groups
+- [ ] Add endpoint-level health checks and connectivity diagnostics
+- [ ] Add API status dashboard (Intent endpoint reachability)
+- [ ] Improve operation discovery and search UX
+- [ ] Refresh documentation for single Intent API model
 
 ### Tasks
 
-1. **Fix Orchestrator Spec**
-   - Investigate parsing failure
-   - Validate against OpenAPI 3.0 schema
-   - Fix or report issues to Cisco
+1. **Spec and Tool Quality**
+   - Re-generate operation metadata from intent spec updates
+   - Verify generated `intent_*` tool names and descriptions
+   - Add validation checks for broken/duplicate operation IDs
 
-2. **Modular API Loading**
-   - Create API registry system
-   - Implement on-demand loading
-   - Add enable/disable per API
+2. **Guidance and Usability**
+   - Expand use-case workflows for endpoint analytics operations
+   - Improve category guidance for common troubleshooting flows
+   - Add examples that map prompts to exact `intent_*` tools
 
-3. **Health Monitoring**
-   - Ping endpoints for each API
-   - Track availability
-   - Graceful degradation if API unavailable
+3. **Runtime Health Monitoring**
+   - Validate token endpoint and intent endpoint reachability
+   - Track API response latency and error rates
+   - Graceful degradation on upstream connectivity issues
 
 ### Success Criteria
 
-- All 5 APIs loaded and functional
-- 494+ total endpoints available as MCP tools
-- Health checks show API status
+- Intent operation catalog is complete and validated
+- Health checks report token + intent endpoint status
+- Guidance coverage updated for common operational workflows
 - Performance benchmarks established
 
 ## Phase 3: Web Management UI
@@ -340,8 +339,8 @@ This roadmap outlines the development plan for the Catalyst Center MCP Server fr
 
 ## Version Strategy
 
-- **v1.0.0**: Phase 1 complete (Manage API)
-- **v1.1.0**: Phase 2 complete (All APIs)
+- **v1.0.0**: Phase 1 complete (Intent API)
+- **v1.1.0**: Phase 2 complete (Intent API expansion)
 - **v1.2.0**: Phase 3 complete (Web UI)
 - **v1.3.0**: Phase 4 complete (Production hardening)
 - **v2.0.0**: Phase 6+ (Breaking changes, new architecture)
@@ -369,7 +368,7 @@ This roadmap outlines the development plan for the Catalyst Center MCP Server fr
 | 2025-01-23 | Basic Auth over OAuth2 | Simpler, faster Phase 1 implementation |
 | 2025-01-23 | Environment variable security | Simplest approach for Phase 1 |
 | 2025-01-23 | PostgreSQL over file config | ACID compliance, better audit logging |
-| 2025-01-23 | Manage API only in Phase 1 | Fastest path to working prototype |
+| 2025-01-23 | Intent API only in Phase 1 | Fastest path to working prototype |
 
 ## Changelog
 
