@@ -27,36 +27,37 @@ COMMENT ON COLUMN roles.tool_profile_id IS
 
 INSERT INTO tool_profiles (name, description, max_tools, is_active, created_at, updated_at)
 VALUES
-    (
-        'Full Access',
-        'All available operations (no filtering)',
-        0,
-        TRUE, NOW(), NOW()
-    ),
+    -- (
+    --     'Full Access',
+    --     'All available operations (no filtering)',
+    --     0,
+    --     TRUE, NOW(), NOW()
+    -- ),
     (
         'Read-Only Analyst',
         'Read-only analysis tools for monitoring and reporting',
         120,
         TRUE, NOW(), NOW()
-    ),
-    (
-        'Network Operator',
-        'Read and write tools for network operations',
-        400,
-        TRUE, NOW(), NOW()
-    ),
-    (
-        'Infrastructure Viewer',
-        'Infrastructure and analysis read-only tools',
-        200,
-        TRUE, NOW(), NOW()
-    ),
-    (
-        'Troubleshooting Only',
-        'Troubleshooting workflow tools',
-        50,
-        TRUE, NOW(), NOW()
     )
+    -- ),
+    -- (
+    --     'Network Operator',
+    --     'Read and write tools for network operations',
+    --     400,
+    --     TRUE, NOW(), NOW()
+    -- ),
+    -- (
+    --     'Infrastructure Viewer',
+    --     'Infrastructure and analysis read-only tools',
+    --     200,
+    --     TRUE, NOW(), NOW()
+    -- ),
+    -- (
+    --     'Troubleshooting Only',
+    --     'Troubleshooting workflow tools',
+    --     50,
+    --     TRUE, NOW(), NOW()
+    -- )
 ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================================
@@ -65,7 +66,7 @@ ON CONFLICT (name) DO NOTHING;
 -- which matches the format used throughout role_operations and MCP tool names.
 -- ============================================================================
 
--- "Read-Only Analyst": GET operations from the intent API
+"Read-Only Analyst": GET operations from the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
     (SELECT id FROM tool_profiles WHERE name = 'Read-Only Analyst'),
@@ -76,37 +77,37 @@ WHERE api_name = 'intent'
   AND http_method = 'GET'
 ON CONFLICT DO NOTHING;
 
--- "Network Operator": All methods across the intent API
-INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
-SELECT
-    (SELECT id FROM tool_profiles WHERE name = 'Network Operator'),
-    api_name || '_' || operation_id,
-    NOW()
-FROM api_endpoints
-WHERE api_name = 'intent'
-ON CONFLICT DO NOTHING;
+-- -- "Network Operator": All methods across the intent API
+-- INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
+-- SELECT
+--     (SELECT id FROM tool_profiles WHERE name = 'Network Operator'),
+--     api_name || '_' || operation_id,
+--     NOW()
+-- FROM api_endpoints
+-- WHERE api_name = 'intent'
+-- ON CONFLICT DO NOTHING;
 
--- "Infrastructure Viewer": GET operations from the intent API
-INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
-SELECT
-    (SELECT id FROM tool_profiles WHERE name = 'Infrastructure Viewer'),
-    api_name || '_' || operation_id,
-    NOW()
-FROM api_endpoints
-WHERE api_name = 'intent'
-  AND http_method = 'GET'
-ON CONFLICT DO NOTHING;
+-- -- "Infrastructure Viewer": GET operations from the intent API
+-- INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
+-- SELECT
+--     (SELECT id FROM tool_profiles WHERE name = 'Infrastructure Viewer'),
+--     api_name || '_' || operation_id,
+--     NOW()
+-- FROM api_endpoints
+-- WHERE api_name = 'intent'
+--   AND http_method = 'GET'
+-- ON CONFLICT DO NOTHING;
 
--- "Troubleshooting Only": Distinct operation names referenced by active workflow steps
-INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
-SELECT DISTINCT
-    (SELECT id FROM tool_profiles WHERE name = 'Troubleshooting Only'),
-    ws.operation_name,
-    NOW()
-FROM workflow_steps ws
-JOIN workflows w ON ws.workflow_id = w.id
-WHERE w.is_active = TRUE
-ON CONFLICT DO NOTHING;
+-- -- "Troubleshooting Only": Distinct operation names referenced by active workflow steps
+-- INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
+-- SELECT DISTINCT
+--     (SELECT id FROM tool_profiles WHERE name = 'Troubleshooting Only'),
+--     ws.operation_name,
+--     NOW()
+-- FROM workflow_steps ws
+-- JOIN workflows w ON ws.workflow_id = w.id
+-- WHERE w.is_active = TRUE
+-- ON CONFLICT DO NOTHING;
 
 -- ============================================================================
 -- ASSIGN DEFAULT PROFILES TO SYSTEM ROLES
