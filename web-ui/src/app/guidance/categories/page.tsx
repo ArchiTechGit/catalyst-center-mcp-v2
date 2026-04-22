@@ -14,7 +14,7 @@ export default function CategoryGuidancePage() {
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryGuidance | null>(null);
   const [formData, setFormData] = useState({
-    api_name: 'manage',
+    api_name: 'intent',
     category_name: '',
     display_name: '',
     description: '',
@@ -24,7 +24,7 @@ export default function CategoryGuidancePage() {
     is_active: true,
   });
 
-  const apiOptions = ['manage', 'analyze', 'infra', 'one_manage'];
+  const apiOptions = ['intent'];
 
   const fetchCategories = async () => {
     try {
@@ -62,7 +62,7 @@ export default function CategoryGuidancePage() {
   const handleCreate = () => {
     setEditingCategory(null);
     setFormData({
-      api_name: selectedApi === 'all' ? 'manage' : selectedApi,
+      api_name: selectedApi === 'all' ? 'intent' : selectedApi,
       category_name: '',
       display_name: '',
       description: '',

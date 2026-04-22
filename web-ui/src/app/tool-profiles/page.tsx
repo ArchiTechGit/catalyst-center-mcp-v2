@@ -4,15 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
 import { api } from '@/lib/api-client';
-import type { ToolProfile, CreateToolProfileRequest, UpdateToolProfileRequest } from '@/types';
-
-interface OperationItem {
-  name: string;
-  method: string;
-  path: string;
-  api_name: string;
-  description: string;
-}
+import type { ToolProfile, CreateToolProfileRequest, UpdateToolProfileRequest, Operation } from '@/types';
 
 interface OperationsSearchDropdownProps {
   selectedOperations: string[];
@@ -21,7 +13,7 @@ interface OperationsSearchDropdownProps {
 
 function OperationsSearchDropdown({ selectedOperations, onToggle }: OperationsSearchDropdownProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [operations, setOperations] = useState<OperationItem[]>([]);
+  const [operations, setOperations] = useState<Operation[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -144,7 +136,7 @@ export default function ToolProfilesPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    max_tools: 50,
+    max_tools: 671,
     is_active: true,
     operations: [] as string[],
   });
@@ -172,7 +164,7 @@ export default function ToolProfilesPage() {
 
   const handleCreate = () => {
     setEditingProfile(null);
-    setFormData({ name: '', description: '', max_tools: 50, is_active: true, operations: [] });
+    setFormData({ name: '', description: '', max_tools: 671, is_active: true, operations: [] });
     setShowModal(true);
   };
 
@@ -445,10 +437,10 @@ export default function ToolProfilesPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Max Tools</label>
                   <input
                     type="number"
-                    min={1}
-                    max={500}
+                    min={0}
+                    max={1296}
                     value={formData.max_tools}
-                    onChange={(e) => setFormData({ ...formData, max_tools: parseInt(e.target.value) || 50 })}
+                    onChange={(e) => setFormData({ ...formData, max_tools: parseInt(e.target.value) || 0 })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
                   />
                   <p className="mt-1 text-xs text-gray-500">Maximum number of tools to expose from this profile</p>

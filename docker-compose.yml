@@ -162,11 +162,8 @@ services:
     volumes:
       - certs:/app/certs:ro
     command:
-      - sh
-      - -c
-      - |
-        test -n "$BACKEND_API_URL" || { echo "ERROR: BACKEND_API_URL is required"; exit 1; }
-        node https-server.js
+      - node
+      - https-server.js
     restart: unless-stopped
 
 networks:

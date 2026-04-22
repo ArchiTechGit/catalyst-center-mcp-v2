@@ -436,6 +436,7 @@ export interface CreateToolProfileRequest {
   name: string;
   description?: string;
   max_tools?: number;
+  is_active?: boolean;
   operations?: string[];
 }
 

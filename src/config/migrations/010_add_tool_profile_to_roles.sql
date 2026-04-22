@@ -25,40 +25,34 @@ COMMENT ON COLUMN roles.tool_profile_id IS
 -- "Full Access" already exists from migration 006 - skip it.
 -- ============================================================================
 
-INSERT INTO tool_profiles (name, description, max_tools, is_active, created_at, updated_at)
-VALUES
-    -- (
-    --     'Full Access',
-    --     'All available operations (no filtering)',
-    --     0,
-    --     TRUE, NOW(), NOW()
-    -- ),
-    (
-        'Read-Only Analyst',
-        'Read-only analysis tools for monitoring and reporting',
-        120,
-        TRUE, NOW(), NOW()
-    )
-    -- ),
-    -- (
-    --     'Network Operator',
-    --     'Read and write tools for network operations',
-    --     400,
-    --     TRUE, NOW(), NOW()
-    -- ),
-    -- (
-    --     'Infrastructure Viewer',
-    --     'Infrastructure and analysis read-only tools',
-    --     200,
-    --     TRUE, NOW(), NOW()
-    -- ),
-    -- (
-    --     'Troubleshooting Only',
-    --     'Troubleshooting workflow tools',
-    --     50,
-    --     TRUE, NOW(), NOW()
-    -- )
-ON CONFLICT (name) DO NOTHING;
+-- INSERT INTO tool_profiles (name, description, max_tools, is_active, created_at, updated_at)
+-- VALUES
+--     -- (
+--     --     'Full Access',
+--     --     'All available operations (no filtering)',
+--     --     0,
+--     --     TRUE, NOW(), NOW()
+--     -- ),
+--     (
+--         'Read-Only User',
+--         'Read-only analysis tools for monitoring and reporting',
+--         671,
+--         TRUE, NOW(), NOW()
+--     )
+--     -- ),
+--     -- (
+--     --     'Infrastructure Viewer',
+--     --     'Infrastructure and analysis read-only tools',
+--     --     200,
+--     --     TRUE, NOW(), NOW()
+--     -- ),
+--     -- (
+--     --     'Troubleshooting Only',
+--     --     'Troubleshooting workflow tools',
+--     --     50,
+--     --     TRUE, NOW(), NOW()
+--     -- )
+-- ON CONFLICT (name) DO NOTHING;
 
 -- ============================================================================
 -- POPULATE tool_profile_operations FOR EACH NEW PROFILE
@@ -66,10 +60,10 @@ ON CONFLICT (name) DO NOTHING;
 -- which matches the format used throughout role_operations and MCP tool names.
 -- ============================================================================
 
-"Read-Only Analyst": GET operations from the intent API
+"Read-Only User": GET operations from the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
-    (SELECT id FROM tool_profiles WHERE name = 'Read-Only Analyst'),
+    (SELECT id FROM tool_profiles WHERE name = 'Read-Only User'),
     api_name || '_' || operation_id,
     NOW()
 FROM api_endpoints
@@ -77,17 +71,7 @@ WHERE api_name = 'intent'
   AND http_method = 'GET'
 ON CONFLICT DO NOTHING;
 
--- -- "Network Operator": All methods across the intent API
--- INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
--- SELECT
---     (SELECT id FROM tool_profiles WHERE name = 'Network Operator'),
---     api_name || '_' || operation_id,
---     NOW()
--- FROM api_endpoints
--- WHERE api_name = 'intent'
--- ON CONFLICT DO NOTHING;
-
--- -- "Infrastructure Viewer": GET operations from the intent API
+---- "Infrastructure Viewer": GET operations from the intent API
 -- INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 -- SELECT
 --     (SELECT id FROM tool_profiles WHERE name = 'Infrastructure Viewer'),
@@ -119,16 +103,8 @@ SET tool_profile_id = (SELECT id FROM tool_profiles WHERE name = 'Full Access')
 WHERE name = 'Administrator'
   AND is_system_role = TRUE;
 
--- Operator role maps to the Network Operator tool profile
--- (handles both "Operator" and legacy "Network Operator" names)
+-- Read-Only User role maps to the Read-Only User tool profile
 UPDATE roles
-SET tool_profile_id = (SELECT id FROM tool_profiles WHERE name = 'Network Operator')
-WHERE name IN ('Operator', 'Network Operator')
-  AND is_system_role = TRUE;
-
--- Viewer role maps to the Read-Only Analyst tool profile
--- (handles both "Viewer" and legacy "Read-Only User" names)
-UPDATE roles
-SET tool_profile_id = (SELECT id FROM tool_profiles WHERE name = 'Read-Only Analyst')
+SET tool_profile_id = (SELECT id FROM tool_profiles WHERE name = 'Read-Only User')
 WHERE name IN ('Viewer', 'Read-Only User')
   AND is_system_role = TRUE;

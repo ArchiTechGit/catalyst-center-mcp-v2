@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS roles (
 CREATE TABLE IF NOT EXISTS role_operations (
     id SERIAL PRIMARY KEY,
     role_id INTEGER NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
-    operation_name VARCHAR(255) NOT NULL,  -- e.g., "manage_createVlan"
+    operation_name VARCHAR(255) NOT NULL,  -- e.g., "intent_queryTheEndpoints"
     created_at TIMESTAMP DEFAULT NOW(),
     UNIQUE(role_id, operation_name)
 );
@@ -74,7 +74,6 @@ CREATE INDEX IF NOT EXISTS idx_user_sessions_expires ON user_sessions(expires_at
 INSERT INTO roles (name, description, edit_mode_enabled, is_system_role, created_at, updated_at)
 VALUES
     ('Administrator', 'Full access to all operations with edit mode enabled', TRUE, TRUE, NOW(), NOW()),
-    ('Network Operator', 'Read-write access to network operational tasks', TRUE, TRUE, NOW(), NOW()),
     ('Read-Only User', 'View-only access to all data without edit capabilities', FALSE, TRUE, NOW(), NOW())
 ON CONFLICT (name) DO NOTHING;
 

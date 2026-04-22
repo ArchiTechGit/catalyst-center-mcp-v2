@@ -35,9 +35,7 @@ CREATE INDEX IF NOT EXISTS idx_users_tool_profile_id ON users(tool_profile_id);
 -- Seed default profiles
 -- max_tools=0 on 'Full Access' profile means no filtering
 INSERT INTO tool_profiles (name, description, max_tools, created_at, updated_at) VALUES
-    ('Fabric Operations', 'Common SDA fabric read-only monitoring and health check operations.', 100, NOW(), NOW()),
-    ('Fabric Management', 'Common SDA fabric read-only monitoring and health check operations.', 100, NOW(), NOW()),
-    -- ('Troubleshooting', 'Network analysis and troubleshooting tools', 100, NOW(), NOW()),
+    ('Read-Only User', 'Read-only access to all GET operations from the Intent API', 671, NOW(), NOW()),
     ('Full Access', 'All available operations (no filtering)', 0, NOW(), NOW())
 ON CONFLICT (name) DO NOTHING;
 

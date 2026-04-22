@@ -59,7 +59,7 @@ This document describes the five critical fixes implemented to make the platform
 **Solution:** Per-user cluster routing via API token.
 
 ### Changes
-- `NexusDashboardMCP.__init__()` no longer requires cluster_name
+- `CatalystCenterMCP.__init__()` no longer requires cluster_name
 - `handle_call_tool()` accepts `cluster_name` parameter
 - `AuthMiddleware` instances cached per cluster (lazy creation)
 - MCP transport resolves target cluster from user's assigned clusters (primary = first)

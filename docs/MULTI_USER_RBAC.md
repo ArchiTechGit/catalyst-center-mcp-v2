@@ -91,7 +91,6 @@ This document describes the multi-user authentication and authorization system f
 | Role Name        | Edit Mode | Description                                        |
 |------------------|-----------|---------------------------------------------------|
 | Administrator    | Yes       | Full access to all operations with edit mode      |
-| Network Operator | Yes       | Read-write access to network operational tasks    |
 | Read-Only User   | No        | View-only access without edit capabilities        |
 
 ## Authentication Methods
@@ -200,9 +199,9 @@ When a user connects via Claude Desktop:
 │  │ intent_getTaskDetails, intent_getEndpointDetails, ...             │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                              │                                  │
-│                              │ User: network_operator           │
-│                              │ Roles: [Network Operator]        │
-│                              │ Allowed: [intent_*, intent_*]   │
+│                              │ User: read_only_user             │
+│                              │ Roles: [Read-Only User]          │
+│                              │ Allowed: [intent_GET_*, ...]     │
 │                              ▼                                  │
 │  Filtered Tools                                                 │
 │  ┌─────────────────────────────────────────────────────────┐   │

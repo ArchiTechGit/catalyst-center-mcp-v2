@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS security_config (
 -- API endpoints mapping table
 CREATE TABLE IF NOT EXISTS api_endpoints (
     id SERIAL PRIMARY KEY,
-    api_name VARCHAR(50) NOT NULL, -- 'manage', 'analyze', 'infra', etc.
+    api_name VARCHAR(50) NOT NULL, -- e.g., 'intent'
     operation_id VARCHAR(255) NOT NULL,
     http_method VARCHAR(10) NOT NULL,
     path VARCHAR(512) NOT NULL,
@@ -291,9 +291,7 @@ ON CONFLICT (name) DO NOTHING;
 
 -- Insert default tool profiles (max_tools=0 means no filtering for Full Access)
 INSERT INTO tool_profiles (name, description, max_tools) VALUES
-    ('Fabric Operations', 'Common fabric management operations for VLAN, VRF, BD, and EPG', 30),
-    ('Monitoring & Health', 'Read-only monitoring and health check operations', 25),
-    ('Troubleshooting', 'Network analysis and troubleshooting tools', 25),
+    ('Read-Only User', 'Read-only access to all GET operations from the Intent API', 671),
     ('Full Access', 'All available operations (no filtering)', 0)
 ON CONFLICT (name) DO NOTHING;
 
