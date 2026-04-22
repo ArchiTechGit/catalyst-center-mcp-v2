@@ -60,7 +60,7 @@ COMMENT ON COLUMN roles.tool_profile_id IS
 -- which matches the format used throughout role_operations and MCP tool names.
 -- ============================================================================
 
-"Read-Only User": GET operations from the intent API
+-- "Read-Only User": GET operations from the intent API
 INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
 SELECT
     (SELECT id FROM tool_profiles WHERE name = 'Read-Only User'),

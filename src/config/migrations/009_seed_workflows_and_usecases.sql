@@ -1,7 +1,9 @@
 -- Migration 009: Seed built-in troubleshooting workflows and use cases
 -- Version: 009
 -- Date: 2026-03-18
--- Description: Seeds 10 practical workflows with steps and 8 use cases for guided troubleshooting
+-- Description: Workflow/use-case seed data intentionally disabled; tables exist but are empty by default.
+
+SELECT 1;
 
 -- ============================================================================
 -- WORKFLOWS
