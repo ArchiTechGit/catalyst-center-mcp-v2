@@ -30,11 +30,11 @@ ENV NODE_ENV=production
 # Install openssl for certificate debugging and verification
 RUN apk add --no-cache openssl
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
 # Copy built application from standalone output
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
@@ -50,18 +50,18 @@ COPY --chown=nextjs:nodejs https-server.js ./
 USER nextjs
 
 # Default to HTTPS port
-EXPOSE 7443
+EXPOSE 7444
 
 # Environment defaults
-ENV PORT=7443
-ENV INTERNAL_PORT=7100
+ENV PORT=7444
+ENV INTERNAL_PORT=7101
 ENV HOSTNAME="0.0.0.0"
 ENV SSL_ENABLED=true
 ENV SSL_CERTFILE=/app/certs/server.crt
 ENV SSL_KEYFILE=/app/certs/server.key
 
 # BACKEND_API_URL for API proxying (HTTPS internal Docker network)
-ENV BACKEND_API_URL=http://nd_mcp_web_api:7100
+ENV BACKEND_API_URL=http://catc_mcp_web_api:7101
 
 # Allow self-signed certificates for internal communication
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
