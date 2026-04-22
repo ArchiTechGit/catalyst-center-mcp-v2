@@ -201,6 +201,33 @@ async def sync_role_operations():
         logger.info("Role operations sync completed")
 
 
+async def sync_tool_profile_operations():
+    """Populate tool_profile_operations for profiles whose operations come from api_endpoints.
+
+    Migration 010 cannot do this reliably because api_endpoints is populated
+    after migrations run. This function runs post-migration to fill the gap.
+    Only inserts rows that don't already exist (idempotent).
+    """
+    db = get_db()
+
+    async with db.session() as session:
+        await session.execute(text("""
+            INSERT INTO tool_profile_operations (profile_id, operation_name, created_at)
+            SELECT
+                tp.id,
+                ae.api_name || '_' || ae.operation_id,
+                NOW()
+            FROM tool_profiles tp
+            CROSS JOIN api_endpoints ae
+            WHERE tp.name = 'Read-Only User'
+              AND ae.http_method = 'GET'
+            ON CONFLICT DO NOTHING
+        """))
+        await session.commit()
+
+    logger.info("Tool profile operations synced for Read-Only User")
+
+
 async def initialize_database_defaults():
     """Initialize all default database records.
 
@@ -217,5 +244,8 @@ async def initialize_database_defaults():
 
     # Sync role operations for system roles
     await sync_role_operations()
+
+    # Sync tool profile operations (depends on api_endpoints being populated first)
+    await sync_tool_profile_operations()
 
     logger.info("Database initialization completed")
